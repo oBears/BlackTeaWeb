@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link id="theme" rel="stylesheet" href="./bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./EliteInsights-1.1.css">
+    <link rel="stylesheet" type="text/css" href="./dataTables.bootstrap4.min.css">
+    <script src="./jquery-3.3.1.min.js"></script>
+    <script src="./popper.min.js"></script>
+    <script src="./plotly-1.54.7.min.js"></script>
+    <script src="./jquery.dataTables.min.js"></script>
+    <script src="./alt-string.js"></script>
+    <script src="./bootstrap.min.js"></script>
+    <script src="./vue.min.js"></script>
+    <script>
+        var logData = '${logDataJson}';
+    </script>
+    <script>
+        var graphData = '${graphDataJson}';
+    </script>
+    <script src="./EliteInsights-1.1.js"></script>
+    <!--${CombatReplayJS}-->
+</head>
+
+<body class="theme-slate">
+  
+    <div class="d-flex justify-content-center align-item-center mt-2" id="loading">
+        <div class="card" style="width: 75%;">
+            <div class="card-body" style="margin: 100px; text-align: center;">
+                Loading data...
+            </div>
+        </div>
+    </div>
+    <div v-cloak id="content" :class="{'ei-container-small':mode === 0, 'ei-container-big':mode === 1}">
+        <div class="d-flex flex-row justify-content-center align-items-center mt-2 ">
+            <div v-if="!!errorMessages" class="d-flex flex-column justify-content-center align-items-center">
+                <img v-for="message in errorMessages" class="mb-1 icon" src="https://i.imgur.com/k3tdKEQ.png" :data-original-title="message" />
+            </div>
+            <encounter-component></encounter-component>
+            <div class="d-flex flex-column justify-content-center align-items-center ml-5">
+                <div v-if="cr" class="d-flex flex-row justify-content-center align-items-center">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item mb-1">
+                            <a class="nav-link" @click="mode = 0" :class="{active: mode === 0}">Statistics</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" @click="mode = 1" :class="{active: mode === 1 }">Combat Replay</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div>
+            <keep-alive>
+                <main-view-component v-if="mode === 0" :key="'main-view'" :light="light"></main-view-component>
+                <combat-replay-ui-component v-if="mode === 1" :mode="mode" :key="'combat-replay'" :light="light"></combat-replay-ui-component>
+            </keep-alive>
+        </div>
+        <div class="footer">
+            <div>Time Start: {{getLogData().encounterStart}} | Time End: {{getLogData().encounterEnd}}</div>
+            <div>ARC: {{getLogData().arcVersion}} | GW2 Build: {{getLogData().gw2Build}} | Fight ID: {{getLogData().fightID}} | {{getLogData().parser}}</div>
+            <div class="mb-2">File recorded by: {{getLogData().recordedBy}}</div>
+            <div v-if="uploadLinks">
+                <p v-for="link in uploadLinks" v-if="link.url.length > 0">{{link.key}}: <a :href="link.url">{{link.url}}</a> </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,120 @@
+<template>
+    <div>
+        <div class="d-flex flex-row justify-content-center mt-1" id="phase-nav">
+            <phase-component :phases="logdata.phases"></phase-component>
+        </div>
+        <div class="d-flex flex-row justify-content-center mb-2 mt-2" id="actors">
+            <div v-show="tab !== 5" :class="{'d-flex': tab !== 5}"
+                class="flex-row justify-content-center align-items-center flex-wrap mr-5">
+                <target-component :targets="logdata.targets" :phaseindex="activePhase"></target-component>
+            </div>
+            <div class="ml-5">
+                <player-component :players="logdata.players" :playerindex="activePlayer"></player-component>
+            </div>
+        </div>     
+        <h2 class="text-center">{{ name }}</h2>
+        <ul class="nav nav-tabs">
+            <li>
+                <a class="nav-link" :class="{active: tab === 0}" @click="tab = 0">General Stats</a>
+            </li>
+            <li>
+                <a class="nav-link" :class="{active: tab === 1}" @click="tab = 1">Buffs</a>
+            </li>
+            <li v-if="hasDamageMods">
+                <a class="nav-link" :class="{active: tab === 2}" @click="tab = 2">Damage Modifiers</a>
+            </li>
+            <li v-if="hasMechanics">
+                <a class="nav-link" :class="{active: tab === 3}" @click="tab = 3">Mechanics</a>
+            </li>
+            <li>
+                <a class="nav-link" :class="{active: tab === 4}" @click="tab = 4">Graph</a>
+            </li>
+            <li v-if="hasTargets">
+                <a class="nav-link" :class="{active: tab === 5}" @click="tab = 5">Targets Summary</a>
+            </li>
+            <li>
+                <a class="nav-link" :class="{active: tab === 6}" @click="tab = 6">Player Summary</a>
+            </li>
+        </ul>
+
+        <keep-alive>
+            <stat-tables-component v-if="tab === 0" :key="'stat-tables'"
+                :phaseindex="activePhase" :playerindex="activePlayer" :activetargets="activePhaseTargets"></stat-tables-component>
+            <buff-tables-component v-if="tab === 1" :key="'buff-tables'"
+                :phaseindex="activePhase" :playerindex="activePlayer"></buff-tables-component>
+            <dmgmodifier-stats-component v-if="tab === 2" :key="'modifier'"
+                :phaseindex="activePhase" :playerindex="activePlayer" :activetargets="activePhaseTargets">
+            </dmgmodifier-stats-component>
+            <mechanics-stats-component v-if="tab === 3" :key="'mechanics'"
+                :phaseindex="activePhase" :playerindex="activePlayer"></mechanics-stats-component>
+            <graph-stats-component v-if="tab === 4" :key="'graph'"
+                :activetargets="activePhaseTargets" :phaseindex="activePhase" :playerindex="activePlayer"
+                :light="light"></graph-stats-component>
+            </personal-buff-table-component>
+            <target-stats-component v-if="tab === 5" :key="'targets'" :playerindex="activePlayer"
+                :simplephase="logdata.phases[activePhase]" :phaseindex="activePhase" :light="light">
+            </target-stats-component>
+            <player-stats-component v-if="tab === 6" :key="'players'"
+                :activeplayer="activePlayer" :phaseindex="activePhase" :activetargets="activePhaseTargets"
+                :light="light"></player-stats-component>
+        </keep-alive>
+    </div>
+</template>
+
+<script>
+    Vue.component("main-view-component", {
+        props: ['light'],
+        template: `${template}`,
+        data: function () {
+            return {
+                tab: 0,
+                logdata: simpleLogData
+            };
+        },
+        computed: {
+            activePhase: function () {
+                var phases = this.logdata.phases;
+                for (var i = 0; i < phases.length; i++) {
+                    if (phases[i].active) {
+                        return i;
+                    }
+                }
+            },
+            phase: function () {
+                return logData.phases[this.activePhase];
+            },
+            activePlayer: function () {
+                var players = this.logdata.players;
+                for (var i = 0; i < players.length; i++) {
+                    if (players[i].active) {
+                        return i;
+                    }
+                }
+                return -1;
+            },
+            name: function () {
+                return this.phase.name + " Summary";
+            },
+            activePhaseTargets: function () {
+                var res = [];
+                var activePhase = logData.phases[this.activePhase];
+                for (var i = 0; i < activePhase.targets.length; i++) {
+                    var target = this.logdata.targets[activePhase.targets[i]];
+                    if (target.active) {
+                        res.push(i);
+                    }
+                }
+                return res;
+            },
+            hasDamageMods: function() {
+                return !logData.targetless;
+            },
+            hasMechanics: function() {
+                return logData.mechanicMap.length > 0 && !logData.noMechanics;
+            },
+            hasTargets: function() {
+                return !logData.targetless && !logData.wvw;
+            }
+        }
+    });
+</script>
