@@ -11,180 +11,121 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using Websocket.Client;
+using Serilog;
 
 namespace BlackTeaWeb
 {
 
-    public class BotClient
+    public static class BotClient
     {
-        private ClientWebSocket ws;
-        private string _url;
-        private string _wwwroot;
-        private string _siteUrl;
-
-        private readonly ConcurrentQueue<string> _sendMessageQueue;
-        private readonly ConcurrentQueue<string> _recvMessageQueue;
-        public static BotClient Instance = new BotClient();
-
-        private BotClient()
+        //private static readonly ManualResetEvent ExitEvent = new ManualResetEvent(false);
+        private static Uri _uri;
+        private static string _wwwroot;
+        private static string _siteUrl;
+        private static IWebsocketClient client;
+        public static void Start(string url, string wwwroot, string siteUrl)
         {
-            _sendMessageQueue = new ConcurrentQueue<string>();
-            _recvMessageQueue = new ConcurrentQueue<string>();
-        }
-
-        public void Init(string url, string wwwroot, string siteUrl)
-        {
-            _url = url;
+            _uri = new Uri(url);
             _wwwroot = wwwroot;
             _siteUrl = siteUrl;
-            _ = Task.Run(HandleRecvMessageAsync);
-            _ = Task.Run(HandleSendMessageAsync);
-            _ = Task.Run(ReceiveAsync);
-        }
-
-        public async Task WaitConnectedAsync()
-        {
-            if (ws == null || ws.State == WebSocketState.Closed || ws.State == WebSocketState.Aborted)
+            var factory = new Func<ClientWebSocket>(() =>
             {
-                ws = new ClientWebSocket();
-                await ws.ConnectAsync(new Uri(_url), CancellationToken.None);
-            }
-
-        }
-
-        private async Task ReceiveAsync()
-        {
-            while (true)
-            {
-                try
+                var client = new ClientWebSocket
                 {
-                    if (ws != null && ws.State == WebSocketState.Open)
+                    Options =
                     {
-                        var buffer = new byte[1024 * 4];
-                        //接收到消息
-                        var r = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                        var content = new StringBuilder();
-                        while (r.MessageType != WebSocketMessageType.Close && r.MessageType == WebSocketMessageType.Text)
+                        KeepAliveInterval = TimeSpan.FromSeconds(5),
+                    }
+                };
+
+                return client;
+            });
+            client = new WebsocketClient(_uri, factory)
+            {
+                Name = "BlackTeaWeb",
+                ReconnectTimeout = TimeSpan.FromSeconds(30),
+                ErrorReconnectTimeout = TimeSpan.FromSeconds(30)
+            };
+            client.MessageReceived.Subscribe(async msg =>
+            {
+                var obj = JObject.Parse(msg.Text);
+                var postType = obj.Get<string>("post_type");
+                switch (postType)
+                {
+                    case "message":
+                        var messageType = obj.Get<string>("message_type");
+                        if (messageType == "group")
                         {
-                            content.Append(Encoding.UTF8.GetString(buffer, 0, r.Count));
-                            if (r.EndOfMessage)
-                            {
-                                _recvMessageQueue.Enqueue(content.ToString());
-                                content.Clear();
-                            }
-                            //没接收完继续接受
-                            r = await ws.ReceiveAsync(new ArraySegment<byte>(buffer, 0, r.Count), CancellationToken.None);
+                            var groupId = obj.Get<long>("group_id");
+                            var rawMessage = obj.Get<string>("raw_message");
+                            await OnGroupMessageAsync(groupId, rawMessage);
                         }
-                        await ws.CloseAsync(r.CloseStatus.Value, r.CloseStatusDescription, CancellationToken.None);
-                        ws.Dispose();
-                    }
+                        break;
+                    case "notice":
+                        var noticeType = obj.Get<string>("notice_type");
+                        if (noticeType == "group_upload")
+                        {
+                            var groupId = obj.Get<long>("group_id");
+                            var senderId = obj.Get<long>("user_id");
+                            var fileName = obj.Get<string>("file.name");
+                            var fileUrl = obj.Get<string>("file.url");
+                            await OnGroupUploadAsync(groupId, senderId, fileName, fileUrl);
+                        }
+                        break;
+                    case "request":
+                        var requestType = obj.Get<string>("request_type");
+                        var subType = obj.Get<string>("sub_type");
+                        if (requestType == "friend")
+                        {
+                            //通过好友申请
+                            SetFriendAddRequest(obj.Get<string>("flag"), true);
+                        }
+                        else if (requestType == "group" && subType == "invite")
+                        {
+                            //通过加群邀请
+                            SetGroupAddRequest(obj.Get<string>("flag"), subType, "", true); ;
+                        }
+                        break;
+                    default:
+                        break;
                 }
-                catch (Exception)
-                {
-
-
-                }
-
-            }
+            });
+            client.Start();
         }
 
-
-        private async Task HandleRecvMessageAsync()
-        {
-            while (true)
-            {
-                if (_recvMessageQueue.TryDequeue(out string recvMsg))
-                {
-
-                    var obj = JObject.Parse(recvMsg);
-                    var postType = obj.GetString("post_type");
-                    var messageType = obj.GetString("message_type");
-                    var noticeType = obj.GetString("notice_type");
-                    var subType = obj.GetString("sub_type");
-                    var requestType = obj.GetString("request_type");
-                    switch (postType)
-                    {
-                        case "message":
-                            if (messageType == "group")
-                            {
-                                await OnGroupMessageAsync(JsonConvert.DeserializeObject<GroupMessageEventArgs>(recvMsg));
-                            }
-                            break;
-                        case "notice":
-                            if (noticeType == "group_upload")
-                            {
-                                await OnGroupUploadAsync(JsonConvert.DeserializeObject<GroupUploadEventArgs>(recvMsg));
-                            }
-                            break;
-                        case "request":
-                            if (requestType == "friend")
-                            {
-                                //通过好友申请
-                                SetFriendAddRequest(obj.GetString("flag"), true);
-                            }
-                            else if (requestType == "group" && subType == "invite")
-                            {
-                                //通过加群邀请
-                                SetGroupAddRequest(obj.GetString("flag"), subType, "", true); ;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                Thread.Sleep(100);
-
-            }
-        }
-        private async Task HandleSendMessageAsync()
-        {
-            while (true)
-            {
-                if (_sendMessageQueue.TryDequeue(out string sendMsg))
-                {
-                    await WaitConnectedAsync();
-                    var buffer = Encoding.UTF8.GetBytes(sendMsg);
-                    await ws.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
-                }
-                Thread.Sleep(100);
-            }
-        }
-     
-        public void SendBotMessage(string action, object @params)
+        public static void SendBotMessage(string action, object @params)
         {
             var jsonSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
             var jsonStr = JsonConvert.SerializeObject(new { action, @params }, jsonSetting);
-            _recvMessageQueue.Enqueue(jsonStr);
+            client.Send(jsonStr);
         }
-        public void SendGroupMessage(long group_id, string message)
+        public static void SendGroupMessage(long group_id, string message)
         {
             SendBotMessage("send_group_msg", new { group_id, message, auto_escape = false });
         }
-        public void SendPrivateMessage(long user_id, string message)
+        public static void SendPrivateMessage(long user_id, string message)
         {
             SendBotMessage("send_private_msg", new { user_id, message, auto_escape = false });
         }
-        public void SetFriendAddRequest(string flag, bool approve)
+        public static void SetFriendAddRequest(string flag, bool approve)
         {
             SendBotMessage("set_friend_add_request", new { flag, approve });
         }
-        public void SetGroupAddRequest(string flag, string sub_type, string reason, bool approve)
+        public static void SetGroupAddRequest(string flag, string sub_type, string reason, bool approve)
         {
             SendBotMessage("set_group_add_request", new { flag, sub_type, reason, approve });
         }
-        public string At(long qq)
+        public static string At(long qq)
         {
             return $"[CQ:at,qq={qq}]";
         }
-
-
-
-        private async Task OnGroupMessageAsync(GroupMessageEventArgs args)
+        private static async Task OnGroupMessageAsync(long groupId, string rawMessage)
         {
             //处理gw2开头信息
-            if (Regex.IsMatch(args.RawMessage, "[^gw2]"))
+            if (Regex.IsMatch(rawMessage, "[^gw2]"))
             {
-                var cmd = args.RawMessage.Replace("gw2", string.Empty);
+                var cmd = rawMessage.Replace("gw2", string.Empty);
                 switch (cmd)
                 {
                     case "":
@@ -194,31 +135,31 @@ namespace BlackTeaWeb
                         var curDate = DateTime.Now.ToString("yyyy-MM-dd");
                         sendMessage.AppendLine($"指挥官手册 {curDate}");
                         var handbookTasks = await GW2Api.GetHandBookTasksAsync();
-                        sendMessage.Append(handbookTasks);
+                        sendMessage.AppendLine(handbookTasks);
                         sendMessage.AppendLine($"积分日常 {curDate}");
                         var scoreTasks = await GW2Api.GetScoreTasksAsync(curDate);
-                        sendMessage.Append(scoreTasks);
-                        SendGroupMessage(args.GroupId, sendMessage.ToString());
+                        sendMessage.AppendLine(scoreTasks);
+                        SendGroupMessage(groupId, sendMessage.ToString());
                         break;
                     default:
                         break;
                 }
             }
         }
-        private async Task OnGroupUploadAsync(GroupUploadEventArgs args)
+        private static async Task OnGroupUploadAsync(long groupId, long senderId, string fileName, string fileUrl)
         {
             //处理 dps 日志文件
-            var fileExt = Path.GetExtension(args.File.Name);
+            var fileExt = Path.GetExtension(fileName);
             if (".zevtc,.evtc".Contains(fileExt, StringComparison.OrdinalIgnoreCase))
             {
                 var guid = Guid.NewGuid().ToString("N");
                 var evtcFileName = Path.Combine(_wwwroot, "files", $"{guid}{fileExt}");
                 var htmlFileName = Path.Combine(_wwwroot, "files", $"{guid}.html");
-                SendGroupMessage(args.GroupId, $"{At(args.UserId)}正在上传日志文件到服务器");
-                await DownloadHelper.DownloadAsync(args.File.Url, evtcFileName);
-                SendGroupMessage(args.GroupId, $"{At(args.UserId)}正在解析日志文件");
+                SendGroupMessage(groupId, $"{At(senderId)}正在上传日志文件到服务器");
+                await DownloadHelper.DownloadAsync(fileUrl, evtcFileName);
+                SendGroupMessage(groupId, $"{At(senderId)}正在解析日志文件");
                 ParseHelper.Parse(evtcFileName, htmlFileName);
-                SendGroupMessage(args.GroupId, $"{At(args.UserId)}解析完成,点击链接查看, {_siteUrl}/files/{guid}.html");
+                SendGroupMessage(groupId, $"{At(senderId)}解析完成,点击链接查看, {_siteUrl}/files/{guid}.html");
             }
         }
 

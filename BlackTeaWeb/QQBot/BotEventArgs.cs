@@ -14,6 +14,6 @@ namespace BlackTeaWeb
         public long UserId { set; get; }
         [JsonProperty("self_id")]
         public long SelfId { set; get; }
-        public DateTime Time { set; get; }
+        public long Time { set; get; }
     }
 }

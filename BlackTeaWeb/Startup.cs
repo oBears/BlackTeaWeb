@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -31,8 +32,8 @@ namespace BlackTeaWeb
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
-            BotClient.Instance.Init(Configuration.GetValue<string>("QQBotURL"), env.WebRootPath, Configuration.GetValue<string>("SiteURL"));
+            ParseHelper.Init(Path.Combine(env.WebRootPath, "cache"));
+            BotClient.Start(Configuration.GetValue<string>("QQBotURL"), env.WebRootPath, Configuration.GetValue<string>("SiteURL"));
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -9,13 +9,15 @@ namespace BlackTeaWeb
     public static class JsonExtensions
     {
 
-        public static string GetString(this JObject obj, string key)
+        public static T Get<T>(this JObject obj, string path)
         {
-            if (obj.TryGetValue(key, out JToken val))
+            var token = obj.SelectToken(path);
+            if (token != null)
             {
-                return val.ToString();
+                return token.ToObject<T>();
             }
-            return string.Empty;
+
+            return default(T);
         }
     }
 }
