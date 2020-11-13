@@ -13,10 +13,10 @@ namespace BlackTeaWeb
     public static class ParseHelper
     {
         private static HTMLAssets htmlAssets;
-        public static void Init()
+        public static void Init(string saveDir)
         {
             htmlAssets = new HTMLAssets();
-            GW2APIController.InitAPICache();
+            GW2APIController.InitAPICache(saveDir);
         }
 
         public static void Parse(string logFile,string outputFile)

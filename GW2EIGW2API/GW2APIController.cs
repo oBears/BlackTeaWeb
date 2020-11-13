@@ -11,6 +11,8 @@ namespace GW2EIGW2API
 {
     public static class GW2APIController
     {
+        private static string saveDir = "";
+
         private static readonly DefaultContractResolver DefaultJsonContractResolver = new DefaultContractResolver
         {
             NamingStrategy = new CamelCaseNamingStrategy()
@@ -32,8 +34,9 @@ namespace GW2EIGW2API
         }
         // INIT
 
-        public static void InitAPICache()
+        public static void InitAPICache(string savedir)
         {
+            saveDir = savedir;
             SetAPISkills();
             //SetAPITraits();
             SetAPISpecs();
@@ -103,13 +106,10 @@ namespace GW2EIGW2API
         }
         public static void WriteAPISkillsToFile()
         {
-            FileStream fcreate = File.Open(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-            + "/Content/SkillList.json", FileMode.Create);
+            var skillFileName = Path.Combine(saveDir, "SkillList.json");
+            FileStream fcreate = File.Open(skillFileName, FileMode.Create);
 
             fcreate.Close();
-
-
-            Console.WriteLine("Getting API");
             //Get list from API
             GetAPIClient();
 
@@ -120,8 +120,7 @@ namespace GW2EIGW2API
             {
                 // Get Skill ID list           
                 skillList.AddRange(GetGW2APISkills());
-                var writer = new StreamWriter(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-            + "/Content/SkillList.json");
+                var writer = new StreamWriter(skillFileName);
                 var serializer = new JsonSerializer
                 {
                     NullValueHandling = NullValueHandling.Ignore,
@@ -141,15 +140,14 @@ namespace GW2EIGW2API
 
             if (_apiSkills.Items.Count == 0)
             {
-                string path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-                + "/Content/SkillList.json";
+             
+                string path = Path.Combine(saveDir, "SkillList.json");
                 if (File.Exists(path))
                 {
                     if (new FileInfo(path).Length != 0)
                     {
-                        Console.WriteLine("Reading Skilllist");
-                        using (var reader = new StreamReader(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-                        + "/Content/SkillList.json"))
+                       
+                        using (var reader = new StreamReader(path))
                         {
                             var serializer = new JsonSerializer()
                             {
@@ -228,25 +226,17 @@ namespace GW2EIGW2API
         }
         public static void WriteAPISpecsToFile()
         {
-            FileStream fcreate = File.Open(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-            + "/Content/SpecList.json", FileMode.Create);
-
+            var specFileName = Path.Combine(saveDir, "SpecList.json");
+            FileStream fcreate = File.Open(specFileName, FileMode.Create);
             fcreate.Close();
-
-
-            Console.WriteLine("Getting API");
-            //Get list from API
             GetAPIClient();
-
             var specList = new List<GW2APISpec>();
             HttpResponseMessage response = APIClient.GetAsync(new Uri("/v2/specializations", UriKind.Relative)).Result;
-            //var failedList = new List<int>();
             if (response.IsSuccessStatusCode)
             {
                 // Get Skill ID list           
                 specList.AddRange(GetGW2APISpecs());
-                var writer = new StreamWriter(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-            + "/Content/SpecList.json");
+                var writer = new StreamWriter(specFileName);
                 var serializer = new JsonSerializer
                 {
                     NullValueHandling = NullValueHandling.Ignore,
@@ -258,7 +248,7 @@ namespace GW2EIGW2API
                 writer.Close();
             }
             _apiSpecs = new APISpecs(specList);
-            //return failedList;
+ 
         }
 
         private static void SetAPISpecs()
@@ -266,15 +256,13 @@ namespace GW2EIGW2API
 
             if (_apiSpecs.Items.Count == 0)
             {
-                string path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-                + "/Content/SpecList.json";
+                string path = Path.Combine(saveDir, "SpecList.json");
                 if (File.Exists(path))
                 {
                     if (new FileInfo(path).Length != 0)
                     {
-                        Console.WriteLine("Reading SpecList");
-                        using (var reader = new StreamReader(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-                        + "/Content/SpecList.json"))
+                    
+                        using (var reader = new StreamReader(path))
                         {
                             var serializer = new JsonSerializer()
                             {
@@ -354,13 +342,13 @@ namespace GW2EIGW2API
         }
         public static void WriteAPITraitsToFile()
         {
-            FileStream fcreate = File.Open(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-            + "/Content/TraitList.json", FileMode.Create);
+            var traitFileName= Path.Combine(saveDir, "TraitList.json");
+            FileStream fcreate =  File.Open(traitFileName, FileMode.Create);
 
             fcreate.Close();
 
 
-            Console.WriteLine("Getting API");
+        
             //Get list from API
             GetAPIClient();
 
@@ -371,8 +359,7 @@ namespace GW2EIGW2API
             {
                 // Get Skill ID list           
                 traitList.AddRange(GetGW2APITraits());
-                var writer = new StreamWriter(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-            + "/Content/TraitList.json");
+                var writer = new StreamWriter(traitFileName);
                 var serializer = new JsonSerializer
                 {
                     NullValueHandling = NullValueHandling.Ignore,
@@ -392,15 +379,13 @@ namespace GW2EIGW2API
 
             if (_apiTraits.Items.Count == 0)
             {
-                string path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-                + "/Content/TraitList.json";
+                string path = Path.Combine(saveDir, "TraitList.json");
                 if (File.Exists(path))
                 {
                     if (new FileInfo(path).Length != 0)
                     {
-                        Console.WriteLine("Reading Traitlist");
-                        using (var reader = new StreamReader(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
-                        + "/Content/TraitList.json"))
+                   
+                        using (var reader = new StreamReader(path))
                         {
                             var serializer = new JsonSerializer()
                             {
