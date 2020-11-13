@@ -17,9 +17,8 @@ using Serilog;
 namespace BlackTeaWeb
 {
 
-    public static class BotClient
+    public static class QQBotClient
     {
-        //private static readonly ManualResetEvent ExitEvent = new ManualResetEvent(false);
         private static Uri _uri;
         private static string _wwwroot;
         private static string _siteUrl;

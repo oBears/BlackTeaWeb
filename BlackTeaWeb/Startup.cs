@@ -32,8 +32,10 @@ namespace BlackTeaWeb
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //初始化EI解析工具
             ParseHelper.Init(Path.Combine(env.WebRootPath, "cache"));
-            BotClient.Start(Configuration.GetValue<string>("QQBotURL"), env.WebRootPath, Configuration.GetValue<string>("SiteURL"));
+            //连接qq机器人
+            QQBotClient.Start(Configuration.GetValue<string>("QQBotURL"), env.WebRootPath, Configuration.GetValue<string>("SiteURL"));
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
