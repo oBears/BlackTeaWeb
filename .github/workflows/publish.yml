@@ -16,9 +16,9 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           command_timeout: 5m
           script: |
-            cd ~/source/blackTeaWeb
+            cd ~/source/BlackTeaWeb
             git pull origin master
-            service blackTeaWeb stop
-            dotnet publish -o ~/blackTeaWeb
-            service blackTeaWeb start
+            sudo systemctl stop blacktea-web
+            dotnet publish BlackTeaWeb/BlackTeaWeb.csproj -o ~/blackTeaWeb 
+            sudo systemctl start blacktea-web
             
