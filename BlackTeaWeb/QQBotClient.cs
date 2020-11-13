@@ -148,11 +148,19 @@ namespace BlackTeaWeb
                 var guid = Guid.NewGuid().ToString("N");
                 var evtcFileName = Path.Combine(_wwwroot, "files", $"{guid}{fileExt}");
                 var htmlFileName = Path.Combine(_wwwroot, "files", $"{guid}.html");
-                SendGroupMessage(groupId, $"{At(senderId)}正在上传日志文件到服务器");
+                SendGroupMessage(groupId, $"{At(senderId)}正在解析日志文件,请耐心等待！");
                 await DownloadHelper.DownloadAsync(fileUrl, evtcFileName);
-                SendGroupMessage(groupId, $"{At(senderId)}正在解析日志文件");
                 ParseHelper.Parse(evtcFileName, htmlFileName);
                 SendGroupMessage(groupId, $"{At(senderId)}解析完成,点击链接查看, {_siteUrl}/files/{guid}.html");
+                try
+                {
+                    File.Delete(evtcFileName);
+                }
+                catch (Exception)
+                {
+
+                }
+
             }
         }
 
