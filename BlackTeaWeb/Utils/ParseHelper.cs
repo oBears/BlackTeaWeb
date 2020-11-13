@@ -23,7 +23,7 @@ namespace BlackTeaWeb
         {
             var operation = new OperationController(logFile, "Ready to parse");
             var fInfo = new FileInfo(logFile);
-            var parser = new EvtcParser(new EvtcParserSettings(false, false, true, false, true, 0));
+            var parser = new EvtcParser(new EvtcParserSettings(false, false, true, true, true, 0));
             ParsedEvtcLog log = parser.ParseLog(operation, fInfo);
             log.FightData.GetPhases(log);
             var playersAndTargets = new List<AbstractSingleActor>(log.PlayerList);
