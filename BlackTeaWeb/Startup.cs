@@ -31,6 +31,8 @@ namespace BlackTeaWeb
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            BotClient.Instance.Init(Configuration.GetValue<string>("QQBotURL"), env.WebRootPath, Configuration.GetValue<string>("SiteURL"));
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
