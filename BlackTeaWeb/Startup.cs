@@ -32,6 +32,7 @@ namespace BlackTeaWeb
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            GW2Api.Init(env.WebRootPath);
             //初始化EI解析工具
             ParseHelper.Init(Path.Combine(env.WebRootPath, "cache"));
             //连接qq机器人

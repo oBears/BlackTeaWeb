@@ -17,6 +17,7 @@ namespace BlackTeaWeb
         private static string _wwwroot;
         private static string _siteUrl;
         private static IWebsocketClient client;
+
         public static void Start(string url, string wwwroot, string siteUrl)
         {
             _uri = new Uri(url);
@@ -115,6 +116,13 @@ namespace BlackTeaWeb
         }
         private static async Task OnGroupMessageAsync(long groupId, string rawMessage)
         {
+            //at机器人 回复帮助
+            if (rawMessage == "[CQ:at,qq=2778769763]")
+            {
+                AnswerHelp(groupId);
+                return;
+            }
+
             //处理gw2开头信息
             if (Regex.IsMatch(rawMessage, "[^gw2]"))
             {
@@ -124,20 +132,57 @@ namespace BlackTeaWeb
                     case "":
                         break;
                     case "日常":
-                        var sendMessage = new StringBuilder();
-                        var curDate = DateTime.Now.ToString("yyyy-MM-dd");
-                        sendMessage.AppendLine($"指挥官手册 {curDate}");
-                        var handbookTasks = await GW2Api.GetHandBookTasksAsync();
-                        sendMessage.AppendLine(handbookTasks);
-                        sendMessage.AppendLine($"积分日常 {curDate}");
-                        var scoreTasks = await GW2Api.GetScoreTasksAsync(curDate);
-                        sendMessage.AppendLine(scoreTasks);
-                        SendGroupMessage(groupId, sendMessage.ToString());
+                        {
+                            var sendMessage = new StringBuilder();
+                            var curDate = DateTime.Now.ToString("yyyy-MM-dd");
+                            sendMessage.AppendLine($"{curDate} 积分日常");
+                            var scoreTasks = await GW2Api.GetScoreTasksAsync(curDate);
+                            sendMessage.AppendLine(scoreTasks);
+
+                            sendMessage.AppendLine($"指挥官手册");
+                            var handbookTasks = await GW2Api.GetHandBookTasksAsync();
+                            sendMessage.AppendLine(handbookTasks);
+         
+                            SendGroupMessage(groupId, sendMessage.ToString());
+                        }
+    
+                        break;
+                    case "菜单":
+                        {
+                            AnswerHelp(groupId);
+                        }
+                        break;
+                    case "商人":
+                        {
+                            var sendMessage = new StringBuilder();
+                            var codeStr = await GW2Api.GetTraderCodeAsync();
+                            sendMessage.AppendLine(codeStr);
+                            SendGroupMessage(groupId, sendMessage.ToString());
+                        }
+                        break;
+                    case "懒人":
+                        {
+                            
+                            var sendMessage = new StringBuilder();
+                            var codeStr = await GW2Api.GetPVEFast();
+                            sendMessage.AppendLine(codeStr);
+                            SendGroupMessage(groupId, sendMessage.ToString());
+                        }
                         break;
                     default:
                         break;
                 }
             }
+        }
+
+        private static void AnswerHelp(long groupId)
+        {
+            var sendMessage = new StringBuilder();
+            sendMessage.AppendLine("1 gw2日常");
+            sendMessage.AppendLine("2 gw2商人");
+            sendMessage.AppendLine("3 gw2懒人");
+            sendMessage.AppendLine("4 上传日志自动解析");
+            SendGroupMessage(groupId, sendMessage.ToString());
         }
         private static async Task OnGroupUploadAsync(long groupId, long senderId, string fileName, string fileUrl)
         {
