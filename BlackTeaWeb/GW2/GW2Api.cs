@@ -59,7 +59,6 @@ namespace BlackTeaWeb
 
             var str = (string)obj["data"][index]["detail"];
             var copyStr = $"{DateTime.Now.ToString("yyyy-M-d HH时")} 数据=星期{(index + 1)} {str}";
-  
 
             return copyStr;
         }
