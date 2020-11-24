@@ -169,6 +169,14 @@ namespace BlackTeaWeb
                             SendGroupMessage(groupId, sendMessage.ToString());
                         }
                         break;
+                    case "游戏日常":
+                        {
+                            var sendMessage = new StringBuilder();
+                            var codeStr = await GW2Api.GetGameDaily();
+                            sendMessage.AppendLine(codeStr);
+                            SendGroupMessage(groupId, sendMessage.ToString());
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -181,7 +189,9 @@ namespace BlackTeaWeb
             sendMessage.AppendLine("1 gw2日常");
             sendMessage.AppendLine("2 gw2商人");
             sendMessage.AppendLine("3 gw2懒人");
-            sendMessage.AppendLine("4 上传日志自动解析");
+            sendMessage.AppendLine("4 gw2游戏日常");
+            
+            sendMessage.AppendLine("ps.上传日志自动解析");
             SendGroupMessage(groupId, sendMessage.ToString());
         }
         private static async Task OnGroupUploadAsync(long groupId, long senderId, string fileName, string fileUrl)

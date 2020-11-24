@@ -63,6 +63,40 @@ namespace BlackTeaWeb
             return copyStr;
         }
 
+        public static async Task<string> GetGameDaily()
+        {
+            using var cli = new WebClient();
+            cli.Headers[HttpRequestHeader.AcceptLanguage] = "zh-CN,zh;q=0.9";
+            var response = await cli.DownloadStringTaskAsync($"https://api.guildwars2.com/v2/achievements/daily");
+            var obj = JObject.Parse(response);
+
+            List<int> idLst = new List<int>();
+            foreach (var data in obj["pve"])
+            {
+                if ((int)data["level"]["min"] == 80 && (int)data["level"]["max"] == 80)
+                {
+                    idLst.Add((int)data["id"]);
+                }
+            }
+
+            var idStr = string.Join(',', idLst);
+            var dailyUrlStr = $"https://api.guildwars2.com/v2/achievements?lang=cn&ids={idStr}";
+            using var cli2 = new WebClient();
+            cli2.Headers[HttpRequestHeader.AcceptLanguage] = "zh-CN,zh;q=0.9";
+            var response2 = await cli2.DownloadStringTaskAsync(dailyUrlStr);
+            var obj2 = JArray.Parse(response2);
+
+            var taskNames = new List<string>();
+
+            int index = 0;
+            foreach (var p in obj2)
+            {
+                taskNames.Add($"{++index} {FixedDailyStr(p)}");
+            }
+
+            return string.Join("\r\n", taskNames);
+        }
+
         public static async Task<string> GetPVEFast()
         {
             var date = DateTime.Now.ToString("yyyy-MM-dd");
@@ -234,6 +268,16 @@ namespace BlackTeaWeb
             }
 
             return retStr;
+        }
+
+        private static string FixedDailyStr(JToken data)
+        {
+            if (dailyCodeDic.TryGetValue((string)data["name"], out var codeStr))
+            {
+                return data["name"] + codeStr;
+            }
+
+            return data["name"].ToString();
         }
     }
 }
