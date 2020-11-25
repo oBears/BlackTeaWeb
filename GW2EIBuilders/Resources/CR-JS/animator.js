@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+﻿/*jshint esversion: 6 */
 // const images
 "use strict";
 const noUpdateTime = -1;
@@ -103,7 +103,7 @@ class Animator {
             downIcon.src = "https://wiki.guildwars2.com/images/c/c6/Downed_enemy.png";
             dcIcon.src = "https://wiki.guildwars2.com/images/f/f5/Talk_end_option_tango.png";
             deadIcon.src = "https://wiki.guildwars2.com/images/4/4a/Ally_death_%28interface%29.png";
-            facingIcon.src = "https://i.imgur.com/tZTmTRn.png";
+            facingIcon.src = "../cache/images/https_i.imgur.com_tZTmTRn.png";
         }
     }
 

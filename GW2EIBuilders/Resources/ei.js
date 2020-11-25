@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+﻿/*jshint esversion: 6 */
 "use strict";
 function compileTemplates() {
     Vue.component("graph-component", {

@@ -69,7 +69,7 @@ namespace GW2EIEvtcParser.EncounterLogic
 
         protected override CombatReplayMap GetCombatMapInternal(ParsedEvtcLog log)
         {
-            return new CombatReplayMap("https://i.imgur.com/gHq0j79.png",
+            return new CombatReplayMap("../cache/images/https_i.imgur.com_gHq0j79.png",
                             (3903, 3878),
                             (-11676, 8825, -3870, 16582),
                             (-21504, -21504, 24576, 24576),
@@ -527,7 +527,7 @@ namespace GW2EIEvtcParser.EncounterLogic
             // It would be way nicer to calculate them here, but we don't have a nice vector library
             // and it would double the amount of work.
 
-            const string platformImageUrl = "https://i.imgur.com/DbXr5Fo.png";
+            const string platformImageUrl = "../cache/images/https_i.imgur.com_DbXr5Fo.png";
             const double hiddenOpacity = 0.2;
 
             const int xLeft = -7975;

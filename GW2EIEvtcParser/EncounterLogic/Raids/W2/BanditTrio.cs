@@ -19,7 +19,7 @@ namespace GW2EIEvtcParser.EncounterLogic
             });
             Extension = "trio";
             GenericFallBackMethod = FallBackMethod.None;
-            Icon = "https://i.imgur.com/UZZQUdf.png";
+            Icon = "../cache/images/https_i.imgur.com_UZZQUdf.png";
         }
 
         protected override List<int> GetSuccessCheckIds()
@@ -42,7 +42,7 @@ namespace GW2EIEvtcParser.EncounterLogic
 
         protected override CombatReplayMap GetCombatMapInternal(ParsedEvtcLog log)
         {
-            return new CombatReplayMap("https://i.imgur.com/cVuaOc5.png",
+            return new CombatReplayMap("../cache/images/https_i.imgur.com_cVuaOc5.png",
                             (2494, 2277),
                             (-2900, -12251, 2561, -7265),
                             (-12288, -27648, 12288, 27648),

@@ -29,12 +29,12 @@ namespace GW2EIEvtcParser.EncounterLogic
             new HitOnPlayerMechanic(51999, "Cyclone Burst", new MechanicPlotlySetting("y-up-open","rgb(255,150,0)"), "Y Field","Cyclone Burst (triangular rotating fields on Kenut)", "Cyclone Burst",0),
             });
             Extension = "twinlargos";
-            Icon = "https://i.imgur.com/6O5MT7v.png";
+            Icon = "../cache/images/https_i.imgur.com_6O5MT7v.png";
         }
 
         protected override CombatReplayMap GetCombatMapInternal(ParsedEvtcLog log)
         {
-            return new CombatReplayMap("https://i.imgur.com/JOoJRXM.png",
+            return new CombatReplayMap("../cache/images/https_i.imgur.com_JOoJRXM.png",
                             (3205, 4191),
                             (10846, -3878, 18086, 5622),
                             (-21504, -21504, 24576, 24576),

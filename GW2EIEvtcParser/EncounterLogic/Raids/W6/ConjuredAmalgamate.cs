@@ -29,12 +29,12 @@ namespace GW2EIEvtcParser.EncounterLogic
             });
             Extension = "ca";
             GenericFallBackMethod = FallBackMethod.None;
-            Icon = "https://i.imgur.com/eLyIWd2.png";
+            Icon = "../cache/images/https_i.imgur.com_eLyIWd2.png";
         }
 
         protected override CombatReplayMap GetCombatMapInternal(ParsedEvtcLog log)
         {
-            return new CombatReplayMap("https://i.imgur.com/9PJB5Ky.png",
+            return new CombatReplayMap("../cache/images/https_i.imgur.com_9PJB5Ky.png",
                             (1414, 2601),
                             (-5064, -15030, -2864, -10830),
                             (-21504, -21504, 24576, 24576),

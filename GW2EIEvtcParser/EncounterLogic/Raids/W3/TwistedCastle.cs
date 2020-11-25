@@ -22,12 +22,12 @@ namespace GW2EIEvtcParser.EncounterLogic
             Extension = "twstcstl";
             GenericFallBackMethod = FallBackMethod.None;
             Targetless = true;
-            Icon = "https://i.imgur.com/xpQnu35.png";
+            Icon = "../cache/images/https_i.imgur.com_xpQnu35.png";
         }
 
         protected override CombatReplayMap GetCombatMapInternal(ParsedEvtcLog log)
         {
-            return new CombatReplayMap("https://i.imgur.com/2RkzdmL.png",
+            return new CombatReplayMap("../cache/images/https_i.imgur.com_2RkzdmL.png",
                             (1353, 1748),
                             (-8058, -4321, 819, 7143),
                             (-12288, -27648, 12288, 27648),

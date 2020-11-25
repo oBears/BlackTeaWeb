@@ -328,7 +328,7 @@ namespace GW2EIBuilders.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;template&gt;
         ///    &lt;div v-if=&quot;buffs.length &gt; 0&quot;&gt;
-        ///        &lt;img v-if=&quot;generation&quot; class=&quot;mb-1 icon&quot; src=&quot;https://i.imgur.com/nSYuby8.png&quot;
+        ///        &lt;img v-if=&quot;generation&quot; class=&quot;mb-1 icon&quot; src=&quot;../cache/images/https_i.imgur.com_nSYuby8.png&quot;
         ///            :data-original-title=&quot;tooltipExpl&quot; /&gt;
         ///        &lt;table class=&quot;table table-sm table-striped table-hover&quot; cellspacing=&quot;0&quot; width=&quot;100%&quot; :id=&quot;id&quot;&gt;
         ///            &lt;thead&gt;
@@ -1058,7 +1058,7 @@ namespace GW2EIBuilders.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;template&gt;
         ///    &lt;div&gt;
-        ///        &lt;img class=&quot;icon mb-1&quot; src=&quot;https://i.imgur.com/nSYuby8.png&quot; :data-original-title=&quot;scoreExpl&quot; /&gt;
+        ///        &lt;img class=&quot;icon mb-1&quot; src=&quot;../cache/images/https_i.imgur.com_nSYuby8.png&quot; :data-original-title=&quot;scoreExpl&quot; /&gt;
         ///        &lt;table class=&quot;table table-sm table-bordered composition&quot;&gt;
         ///            &lt;tbody&gt;
         ///                &lt;tr v-for=&quot;group in groups&quot;&gt;

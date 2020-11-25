@@ -20,12 +20,12 @@ namespace GW2EIEvtcParser.EncounterLogic
             }
             );
             Extension = "boneskin";
-            Icon = "https://i.imgur.com/meYwQmA.png";
+            Icon = "../cache/images/https_i.imgur.com_meYwQmA.png";
         }
 
         protected override CombatReplayMap GetCombatMapInternal(ParsedEvtcLog log)
         {
-            return new CombatReplayMap("https://i.imgur.com/kLjZ7eU.png",
+            return new CombatReplayMap("../cache/images/https_i.imgur.com_kLjZ7eU.png",
                             (905, 789),
                             (-1013, -1600, 2221, 1416),
                             (-0, -0, 0, 0),

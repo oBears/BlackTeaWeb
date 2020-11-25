@@ -1,4 +1,4 @@
-"use strict";
+﻿"use strict";
 //// ACTORS
 class IconDrawable {
     constructor(start, end, imgSrc, pixelSize) {

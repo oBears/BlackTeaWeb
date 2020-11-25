@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,9 +33,9 @@ namespace BlackTeaWeb
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             GW2Api.Init(env.WebRootPath);
-            //³õÊ¼»¯EI½âÎö¹¤¾ß
+            //ï¿½ï¿½Ê¼ï¿½ï¿½EIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             ParseHelper.Init(Path.Combine(env.WebRootPath, "cache"));
-            //Á¬½Óqq»úÆ÷ÈË
+            //ï¿½ï¿½ï¿½ï¿½qqï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             QQBotClient.Start(Configuration.GetValue<string>("QQBotURL"), env.WebRootPath, Configuration.GetValue<string>("SiteURL"));
             if (env.IsDevelopment())
             {

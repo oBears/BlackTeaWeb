@@ -151,20 +151,20 @@ namespace GW2EIEvtcParser.EncounterLogic
             phases.AddRange(mainPhases);
             phases.Sort((x, y) => x.Start.CompareTo(y.Start));
             GetCombatMap(log).MatchMapsToPhases(new List<string> {
-                "https://i.imgur.com/3IBkNM6.png",
-                "https://i.imgur.com/iMrhTt6.png",
-                "https://i.imgur.com/zaZftSk.png",
-                "https://i.imgur.com/KkYdspd.png",
-                "https://i.imgur.com/wqgFO7Z.png",
-                "https://i.imgur.com/DroFhFc.png",
-                "https://i.imgur.com/QsEFkNO.png"
+                "../cache/images/https_i.imgur.com_3IBkNM6.png",
+                "../cache/images/https_i.imgur.com_iMrhTt6.png",
+                "../cache/images/https_i.imgur.com_zaZftSk.png",
+                "../cache/images/https_i.imgur.com_KkYdspd.png",
+                "../cache/images/https_i.imgur.com_wqgFO7Z.png",
+                "../cache/images/https_i.imgur.com_DroFhFc.png",
+                "../cache/images/https_i.imgur.com_QsEFkNO.png"
             }, phases, log.FightData.FightEnd);
             return phases;
         }
 
         protected override CombatReplayMap GetCombatMapInternal(ParsedEvtcLog log)
         {
-            return new CombatReplayMap("https://i.imgur.com/3IBkNM6.png",
+            return new CombatReplayMap("../cache/images/https_i.imgur.com_3IBkNM6.png",
                             (1436, 1659),
                             (13840, -2698, 15971, -248),
                             (-21504, -21504, 24576, 24576),

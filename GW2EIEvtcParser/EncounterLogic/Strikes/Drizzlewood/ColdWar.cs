@@ -19,7 +19,7 @@ namespace GW2EIEvtcParser.EncounterLogic
             }
             );
             Extension = "coldwar";
-            Icon = "https://i.imgur.com/r9b2oww.png";
+            Icon = "../cache/images/https_i.imgur.com_r9b2oww.png";
         }
 
         internal override List<PhaseData> GetPhases(ParsedEvtcLog log, bool requirePhases)

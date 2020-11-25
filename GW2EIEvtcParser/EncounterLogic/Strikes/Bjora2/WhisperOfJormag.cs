@@ -26,7 +26,7 @@ namespace GW2EIEvtcParser.EncounterLogic
             }
             );
             Extension = "woj";
-            Icon = "https://i.imgur.com/8GLwgfL.png";
+            Icon = "../cache/images/https_i.imgur.com_8GLwgfL.png";
         }
 
         internal override List<PhaseData> GetPhases(ParsedEvtcLog log, bool requirePhases)

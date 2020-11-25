@@ -235,98 +235,98 @@ namespace GW2EIEvtcParser
                 case ArcDPSEnums.TargetID.WorldVersusWorld:
                     return "https://wiki.guildwars2.com/images/d/db/PvP_Server_Browser_%28map_icon%29.png";
                 case ArcDPSEnums.TargetID.ValeGuardian:
-                    return "https://i.imgur.com/MIpP5pK.png";
+                    return "../cache/images/https_i.imgur.com_MIpP5pK.png";
                 case ArcDPSEnums.TargetID.Gorseval:
-                    return "https://i.imgur.com/5hmMq12.png";
+                    return "../cache/images/https_i.imgur.com_5hmMq12.png";
                 case ArcDPSEnums.TargetID.Sabetha:
-                    return "https://i.imgur.com/UqbFp9S.png";
+                    return "../cache/images/https_i.imgur.com_UqbFp9S.png";
                 case ArcDPSEnums.TargetID.Slothasor:
-                    return "https://i.imgur.com/h1xH3ER.png";
+                    return "../cache/images/https_i.imgur.com_h1xH3ER.png";
                 case ArcDPSEnums.TargetID.Berg:
-                    return "https://i.imgur.com/tLMXqL7.png";
+                    return "../cache/images/https_i.imgur.com_tLMXqL7.png";
                 case ArcDPSEnums.TargetID.Narella:
-                    return "https://i.imgur.com/FwMCoR0.png";
+                    return "../cache/images/https_i.imgur.com_FwMCoR0.png";
                 case ArcDPSEnums.TargetID.Zane:
-                    return "https://i.imgur.com/tkPWMST.png";
+                    return "../cache/images/https_i.imgur.com_tkPWMST.png";
                 case ArcDPSEnums.TargetID.Matthias:
-                    return "https://i.imgur.com/3uMMmTS.png";
+                    return "../cache/images/https_i.imgur.com_3uMMmTS.png";
                 case ArcDPSEnums.TargetID.KeepConstruct:
-                    return "https://i.imgur.com/Kq0kL07.png";
+                    return "../cache/images/https_i.imgur.com_Kq0kL07.png";
                 case ArcDPSEnums.TargetID.Xera:
-                    return "https://i.imgur.com/lYwJEyV.png";
+                    return "../cache/images/https_i.imgur.com_lYwJEyV.png";
                 case ArcDPSEnums.TargetID.Cairn:
-                    return "https://i.imgur.com/gQY37Tf.png";
+                    return "../cache/images/https_i.imgur.com_gQY37Tf.png";
                 case ArcDPSEnums.TargetID.MursaatOverseer:
-                    return "https://i.imgur.com/5LNiw4Y.png";
+                    return "../cache/images/https_i.imgur.com_5LNiw4Y.png";
                 case ArcDPSEnums.TargetID.Samarog:
-                    return "https://i.imgur.com/MPQhKfM.png";
+                    return "../cache/images/https_i.imgur.com_MPQhKfM.png";
                 case ArcDPSEnums.TargetID.Deimos:
-                    return "https://i.imgur.com/mWfxBaO.png";
+                    return "../cache/images/https_i.imgur.com_mWfxBaO.png";
                 case ArcDPSEnums.TargetID.SoullessHorror:
                 case ArcDPSEnums.TargetID.Desmina:
-                    return "https://i.imgur.com/jAiRplg.png";
+                    return "../cache/images/https_i.imgur.com_jAiRplg.png";
                 case ArcDPSEnums.TargetID.BrokenKing:
-                    return "https://i.imgur.com/FNgUmvL.png";
+                    return "../cache/images/https_i.imgur.com_FNgUmvL.png";
                 case ArcDPSEnums.TargetID.SoulEater:
-                    return "https://i.imgur.com/Sd6Az8M.png";
+                    return "../cache/images/https_i.imgur.com_Sd6Az8M.png";
                 case ArcDPSEnums.TargetID.EyeOfFate:
                 case ArcDPSEnums.TargetID.EyeOfJudgement:
-                    return "https://i.imgur.com/kAgdoa5.png";
+                    return "../cache/images/https_i.imgur.com_kAgdoa5.png";
                 case ArcDPSEnums.TargetID.Dhuum:
-                    return "https://i.imgur.com/RKaDon5.png";
+                    return "../cache/images/https_i.imgur.com_RKaDon5.png";
                 case ArcDPSEnums.TargetID.ConjuredAmalgamate:
-                    return "https://i.imgur.com/C23rYTl.png";
+                    return "../cache/images/https_i.imgur.com_C23rYTl.png";
                 case ArcDPSEnums.TargetID.CALeftArm:
-                    return "https://i.imgur.com/qrkQvEY.png";
+                    return "../cache/images/https_i.imgur.com_qrkQvEY.png";
                 case ArcDPSEnums.TargetID.CARightArm:
-                    return "https://i.imgur.com/MVwjtH7.png";
+                    return "../cache/images/https_i.imgur.com_MVwjtH7.png";
                 case ArcDPSEnums.TargetID.Kenut:
-                    return "https://i.imgur.com/6yq45Cc.png";
+                    return "../cache/images/https_i.imgur.com_6yq45Cc.png";
                 case ArcDPSEnums.TargetID.Nikare:
-                    return "https://i.imgur.com/TLykcrJ.png";
+                    return "../cache/images/https_i.imgur.com_TLykcrJ.png";
                 case ArcDPSEnums.TargetID.Qadim:
-                    return "https://i.imgur.com/IfoHTHT.png";
+                    return "../cache/images/https_i.imgur.com_IfoHTHT.png";
                 case ArcDPSEnums.TargetID.Freezie:
                     return "https://wiki.guildwars2.com/images/d/d9/Mini_Freezie.png";
                 case ArcDPSEnums.TargetID.Adina:
-                    return "https://i.imgur.com/or3m1yb.png";
+                    return "../cache/images/https_i.imgur.com_or3m1yb.png";
                 case ArcDPSEnums.TargetID.Sabir:
-                    return "https://i.imgur.com/Q4WUXqw.png";
+                    return "../cache/images/https_i.imgur.com_Q4WUXqw.png";
                 case ArcDPSEnums.TargetID.PeerlessQadim:
-                    return "https://i.imgur.com/47uePpb.png";
+                    return "../cache/images/https_i.imgur.com_47uePpb.png";
                 case ArcDPSEnums.TargetID.IcebroodConstruct:
                 case ArcDPSEnums.TargetID.IcebroodConstructFraenir:
-                    return "https://i.imgur.com/dpaZFa5.png";
+                    return "../cache/images/https_i.imgur.com_dpaZFa5.png";
                 case ArcDPSEnums.TargetID.ClawOfTheFallen:
-                    return "https://i.imgur.com/HF85QpV.png";
+                    return "../cache/images/https_i.imgur.com_HF85QpV.png";
                 case ArcDPSEnums.TargetID.VoiceOfTheFallen:
-                    return "https://i.imgur.com/BdTGXMU.png";
+                    return "../cache/images/https_i.imgur.com_BdTGXMU.png";
                 case ArcDPSEnums.TargetID.VoiceAndClaw:
-                    return "https://i.imgur.com/V1rJBnq.png";
+                    return "../cache/images/https_i.imgur.com_V1rJBnq.png";
                 case ArcDPSEnums.TargetID.FraenirOfJormag:
-                    return "https://i.imgur.com/MxudnKp.png";
+                    return "../cache/images/https_i.imgur.com_MxudnKp.png";
                 case ArcDPSEnums.TargetID.Boneskinner:
-                    return "https://i.imgur.com/7HPdKDQ.png";
+                    return "../cache/images/https_i.imgur.com_7HPdKDQ.png";
                 case ArcDPSEnums.TargetID.WhisperOfJormag:
-                    return "https://i.imgur.com/lu9ZLVq.png";
+                    return "../cache/images/https_i.imgur.com_lu9ZLVq.png";
                 case ArcDPSEnums.TargetID.VariniaStormsounder:
-                    return "https://i.imgur.com/2o8TtiM.png";
+                    return "../cache/images/https_i.imgur.com_2o8TtiM.png";
                 case ArcDPSEnums.TargetID.MAMA:
-                    return "https://i.imgur.com/1h7HOII.png";
+                    return "../cache/images/https_i.imgur.com_1h7HOII.png";
                 case ArcDPSEnums.TargetID.Siax:
-                    return "https://i.imgur.com/5C60cQb.png";
+                    return "../cache/images/https_i.imgur.com_5C60cQb.png";
                 case ArcDPSEnums.TargetID.Ensolyss:
-                    return "https://i.imgur.com/GUTNuyP.png";
+                    return "../cache/images/https_i.imgur.com_GUTNuyP.png";
                 case ArcDPSEnums.TargetID.Skorvald:
-                    return "https://i.imgur.com/IOPAHRE.png";
+                    return "../cache/images/https_i.imgur.com_IOPAHRE.png";
                 case ArcDPSEnums.TargetID.Artsariiv:
                     return "https://wiki.guildwars2.com/images/b/b4/Artsariiv.jpg";
                 case ArcDPSEnums.TargetID.Arkk:
-                    return "https://i.imgur.com/u6vv8cW.png";
+                    return "../cache/images/https_i.imgur.com_u6vv8cW.png";
                 case ArcDPSEnums.TargetID.AiKeeperOfThePeak:
-                    return "https://i.imgur.com/eCXjoAS.png";
+                    return "../cache/images/https_i.imgur.com_eCXjoAS.png";
                 case ArcDPSEnums.TargetID.AiKeeperOfThePeak2:
-                    return "https://i.imgur.com/I8nwhAw.png";
+                    return "../cache/images/https_i.imgur.com_I8nwhAw.png";
                 case ArcDPSEnums.TargetID.LGolem:
                     return "https://wiki.guildwars2.com/images/4/47/Mini_Baron_von_Scrufflebutt.png";
                 case ArcDPSEnums.TargetID.AvgGolem:
@@ -338,7 +338,7 @@ namespace GW2EIEvtcParser
                 case ArcDPSEnums.TargetID.MedGolem:
                     return "https://wiki.guildwars2.com/images/c/cb/Mini_Mister_Mittens.png";
                 case ArcDPSEnums.TargetID.TwistedCastle:
-                    return "https://i.imgur.com/ZBm5Uga.png";
+                    return "../cache/images/https_i.imgur.com_ZBm5Uga.png";
             }
             switch (ArcDPSEnums.GetTrashID(id))
             {
@@ -348,34 +348,34 @@ namespace GW2EIEvtcParser
                 case ArcDPSEnums.TrashID.HollowedBomber:
                 case ArcDPSEnums.TrashID.GuiltDemon:
                 case ArcDPSEnums.TrashID.DoubtDemon:
-                    return "https://i.imgur.com/sHmksvO.png";
+                    return "../cache/images/https_i.imgur.com_sHmksvO.png";
                 case ArcDPSEnums.TrashID.Saul:
-                    return "https://i.imgur.com/ck2IsoS.png";
+                    return "../cache/images/https_i.imgur.com_ck2IsoS.png";
                 case ArcDPSEnums.TrashID.GamblerClones:
-                    return "https://i.imgur.com/zMsBWEx.png";
+                    return "../cache/images/https_i.imgur.com_zMsBWEx.png";
                 case ArcDPSEnums.TrashID.GamblerReal:
-                    return "https://i.imgur.com/J6oMITN.png";
+                    return "../cache/images/https_i.imgur.com_J6oMITN.png";
                 case ArcDPSEnums.TrashID.Pride:
-                    return "https://i.imgur.com/ePTXx23.png";
+                    return "../cache/images/https_i.imgur.com_ePTXx23.png";
                 case ArcDPSEnums.TrashID.OilSlick:
                 case ArcDPSEnums.TrashID.Oil:
-                    return "https://i.imgur.com/R26VgEr.png";
+                    return "../cache/images/https_i.imgur.com_R26VgEr.png";
                 case ArcDPSEnums.TrashID.Tear:
-                    return "https://i.imgur.com/N9seps0.png";
+                    return "../cache/images/https_i.imgur.com_N9seps0.png";
                 case ArcDPSEnums.TrashID.Gambler:
                 case ArcDPSEnums.TrashID.Drunkard:
                 case ArcDPSEnums.TrashID.Thief:
-                    return "https://i.imgur.com/vINeVU6.png";
+                    return "../cache/images/https_i.imgur.com_vINeVU6.png";
                 case ArcDPSEnums.TrashID.TormentedDead:
                 case ArcDPSEnums.TrashID.Messenger:
-                    return "https://i.imgur.com/1J2BTFg.png";
+                    return "../cache/images/https_i.imgur.com_1J2BTFg.png";
                 case ArcDPSEnums.TrashID.Enforcer:
-                    return "https://i.imgur.com/elHjamF.png";
+                    return "../cache/images/https_i.imgur.com_elHjamF.png";
                 case ArcDPSEnums.TrashID.Echo:
-                    return "https://i.imgur.com/kcN9ECn.png";
+                    return "../cache/images/https_i.imgur.com_kcN9ECn.png";
                 case ArcDPSEnums.TrashID.Core:
                 case ArcDPSEnums.TrashID.ExquisiteConjunction:
-                    return "https://i.imgur.com/yI34iqw.png";
+                    return "../cache/images/https_i.imgur.com_yI34iqw.png";
                 case ArcDPSEnums.TrashID.Jessica:
                 case ArcDPSEnums.TrashID.Olson:
                 case ArcDPSEnums.TrashID.Engul:
@@ -384,78 +384,78 @@ namespace GW2EIEvtcParser
                 case ArcDPSEnums.TrashID.Henley:
                 case ArcDPSEnums.TrashID.Galletta:
                 case ArcDPSEnums.TrashID.Ianim:
-                    return "https://i.imgur.com/qeYT1Bf.png";
+                    return "../cache/images/https_i.imgur.com_qeYT1Bf.png";
                 case ArcDPSEnums.TrashID.InsidiousProjection:
-                    return "https://i.imgur.com/9EdItBS.png";
+                    return "../cache/images/https_i.imgur.com_9EdItBS.png";
                 case ArcDPSEnums.TrashID.EnergyOrb:
                     return "https://i.postimg.cc/NMNvyts0/Power-Ball.png";
                 case ArcDPSEnums.TrashID.UnstableLeyRift:
-                    return "https://i.imgur.com/YXM3igs.png";
+                    return "../cache/images/https_i.imgur.com_YXM3igs.png";
                 case ArcDPSEnums.TrashID.RadiantPhantasm:
-                    return "https://i.imgur.com/O5VWLyY.png";
+                    return "../cache/images/https_i.imgur.com_O5VWLyY.png";
                 case ArcDPSEnums.TrashID.CrimsonPhantasm:
-                    return "https://i.imgur.com/zP7Bvb4.png";
+                    return "../cache/images/https_i.imgur.com_zP7Bvb4.png";
                 case ArcDPSEnums.TrashID.Storm:
-                    return "https://i.imgur.com/9XtNPdw.png";
+                    return "../cache/images/https_i.imgur.com_9XtNPdw.png";
                 case ArcDPSEnums.TrashID.IcePatch:
-                    return "https://i.imgur.com/yxKJ5Yc.png";
+                    return "../cache/images/https_i.imgur.com_yxKJ5Yc.png";
                 case ArcDPSEnums.TrashID.BanditSaboteur:
-                    return "https://i.imgur.com/jUKMEbD.png";
+                    return "../cache/images/https_i.imgur.com_jUKMEbD.png";
                 case ArcDPSEnums.TrashID.NarellaTornado:
                 case ArcDPSEnums.TrashID.Tornado:
-                    return "https://i.imgur.com/e10lZMa.png";
+                    return "../cache/images/https_i.imgur.com_e10lZMa.png";
                 case ArcDPSEnums.TrashID.Jade:
-                    return "https://i.imgur.com/ivtzbSP.png";
+                    return "../cache/images/https_i.imgur.com_ivtzbSP.png";
                 case ArcDPSEnums.TrashID.Zommoros:
-                    return "https://i.imgur.com/BxbsRCI.png";
+                    return "../cache/images/https_i.imgur.com_BxbsRCI.png";
                 case ArcDPSEnums.TrashID.AncientInvokedHydra:
-                    return "https://i.imgur.com/YABLiBz.png";
+                    return "../cache/images/https_i.imgur.com_YABLiBz.png";
                 case ArcDPSEnums.TrashID.IcebornHydra:
-                    return "https://i.imgur.com/LoYMBRU.png";
+                    return "../cache/images/https_i.imgur.com_LoYMBRU.png";
                 case ArcDPSEnums.TrashID.IceElemental:
-                    return "https://i.imgur.com/pEkBeNp.png";
+                    return "../cache/images/https_i.imgur.com_pEkBeNp.png";
                 case ArcDPSEnums.TrashID.WyvernMatriarch:
-                    return "https://i.imgur.com/kLKLSfv.png";
+                    return "../cache/images/https_i.imgur.com_kLKLSfv.png";
                 case ArcDPSEnums.TrashID.WyvernPatriarch:
-                    return "https://i.imgur.com/vjjNSpI.png";
+                    return "../cache/images/https_i.imgur.com_vjjNSpI.png";
                 case ArcDPSEnums.TrashID.ApocalypseBringer:
-                    return "https://i.imgur.com/0LGKCn2.png";
+                    return "../cache/images/https_i.imgur.com_0LGKCn2.png";
                 case ArcDPSEnums.TrashID.ConjuredGreatsword:
-                    return "https://i.imgur.com/vHka0QN.png";
+                    return "../cache/images/https_i.imgur.com_vHka0QN.png";
                 case ArcDPSEnums.TrashID.ConjuredShield:
-                    return "https://i.imgur.com/wUiI19S.png";
+                    return "../cache/images/https_i.imgur.com_wUiI19S.png";
                 case ArcDPSEnums.TrashID.GreaterMagmaElemental1:
                 case ArcDPSEnums.TrashID.GreaterMagmaElemental2:
-                    return "https://i.imgur.com/sr146T6.png";
+                    return "../cache/images/https_i.imgur.com_sr146T6.png";
                 case ArcDPSEnums.TrashID.LavaElemental1:
                 case ArcDPSEnums.TrashID.LavaElemental2:
-                    return "https://i.imgur.com/mydwiYy.png";
+                    return "../cache/images/https_i.imgur.com_mydwiYy.png";
                 case ArcDPSEnums.TrashID.PyreGuardian:
                 case ArcDPSEnums.TrashID.SmallKillerTornado:
                 case ArcDPSEnums.TrashID.BigKillerTornado:
-                    return "https://i.imgur.com/6zNPTUw.png";
+                    return "../cache/images/https_i.imgur.com_6zNPTUw.png";
                 case ArcDPSEnums.TrashID.QadimLamp:
-                    return "https://i.imgur.com/89Kjv0N.png";
+                    return "../cache/images/https_i.imgur.com_89Kjv0N.png";
                 case ArcDPSEnums.TrashID.PyreGuardianRetal:
-                    return "https://i.imgur.com/WC6LRkO.png";
+                    return "../cache/images/https_i.imgur.com_WC6LRkO.png";
                 case ArcDPSEnums.TrashID.PyreGuardianStab:
-                    return "https://i.imgur.com/ISa0urR.png";
+                    return "../cache/images/https_i.imgur.com_ISa0urR.png";
                 case ArcDPSEnums.TrashID.PyreGuardianProtect:
-                    return "https://i.imgur.com/jLW7rpV.png";
+                    return "../cache/images/https_i.imgur.com_jLW7rpV.png";
                 case ArcDPSEnums.TrashID.ReaperofFlesh:
-                    return "https://i.imgur.com/Notctbt.png";
+                    return "../cache/images/https_i.imgur.com_Notctbt.png";
                 case ArcDPSEnums.TrashID.Kernan:
-                    return "https://i.imgur.com/WABRQya.png";
+                    return "../cache/images/https_i.imgur.com_WABRQya.png";
                 case ArcDPSEnums.TrashID.Knuckles:
-                    return "https://i.imgur.com/m1y8nJE.png";
+                    return "../cache/images/https_i.imgur.com_m1y8nJE.png";
                 case ArcDPSEnums.TrashID.Karde:
-                    return "https://i.imgur.com/3UGyosm.png";
+                    return "../cache/images/https_i.imgur.com_3UGyosm.png";
                 case ArcDPSEnums.TrashID.Rigom:
-                    return "https://i.imgur.com/REcGMBe.png";
+                    return "../cache/images/https_i.imgur.com_REcGMBe.png";
                 case ArcDPSEnums.TrashID.Guldhem:
-                    return "https://i.imgur.com/xa7Fefn.png";
+                    return "../cache/images/https_i.imgur.com_xa7Fefn.png";
                 case ArcDPSEnums.TrashID.Scythe:
-                    return "https://i.imgur.com/INCGLIK.png";
+                    return "../cache/images/https_i.imgur.com_INCGLIK.png";
                 case ArcDPSEnums.TrashID.BanditBombardier:
                 case ArcDPSEnums.TrashID.SurgingSoul:
                 case ArcDPSEnums.TrashID.MazeMinotaur:
@@ -469,32 +469,32 @@ namespace GW2EIEvtcParser
                 case ArcDPSEnums.TrashID.SorrowDemon3:
                 case ArcDPSEnums.TrashID.SorrowDemon4:
                 case ArcDPSEnums.TrashID.SorrowDemon5:
-                    return "https://i.imgur.com/k79t7ZA.png";
+                    return "../cache/images/https_i.imgur.com_k79t7ZA.png";
                 case ArcDPSEnums.TrashID.HandOfErosion:
                 case ArcDPSEnums.TrashID.HandOfEruption:
-                    return "https://i.imgur.com/reGQHhr.png";
+                    return "../cache/images/https_i.imgur.com_reGQHhr.png";
                 case ArcDPSEnums.TrashID.VoltaicWisp:
-                    return "https://i.imgur.com/C1mvNGZ.png";
+                    return "../cache/images/https_i.imgur.com_C1mvNGZ.png";
                 case ArcDPSEnums.TrashID.ParalyzingWisp:
-                    return "https://i.imgur.com/YBl8Pqo.png";
+                    return "../cache/images/https_i.imgur.com_YBl8Pqo.png";
                 case ArcDPSEnums.TrashID.Pylon2:
-                    return "https://i.imgur.com/b33vAEQ.png";
+                    return "../cache/images/https_i.imgur.com_b33vAEQ.png";
                 case ArcDPSEnums.TrashID.EntropicDistortion:
-                    return "https://i.imgur.com/MIpP5pK.png";
+                    return "../cache/images/https_i.imgur.com_MIpP5pK.png";
                 case ArcDPSEnums.TrashID.SmallJumpyTornado:
-                    return "https://i.imgur.com/WBJNgp7.png";
+                    return "../cache/images/https_i.imgur.com_WBJNgp7.png";
                 case ArcDPSEnums.TrashID.OrbSpider:
-                    return "https://i.imgur.com/FB5VM9X.png";
+                    return "../cache/images/https_i.imgur.com_FB5VM9X.png";
                 case ArcDPSEnums.TrashID.Seekers:
-                    return "https://i.imgur.com/FrPoluz.png";
+                    return "../cache/images/https_i.imgur.com_FrPoluz.png";
                 case ArcDPSEnums.TrashID.BlueGuardian:
-                    return "https://i.imgur.com/6CefnkP.png";
+                    return "../cache/images/https_i.imgur.com_6CefnkP.png";
                 case ArcDPSEnums.TrashID.GreenGuardian:
-                    return "https://i.imgur.com/nauDVYP.png";
+                    return "../cache/images/https_i.imgur.com_nauDVYP.png";
                 case ArcDPSEnums.TrashID.RedGuardian:
-                    return "https://i.imgur.com/73Uj4lG.png";
+                    return "../cache/images/https_i.imgur.com_73Uj4lG.png";
                 case ArcDPSEnums.TrashID.UnderworldReaper:
-                    return "https://i.imgur.com/Tq6SYVe.png";
+                    return "../cache/images/https_i.imgur.com_Tq6SYVe.png";
                 case ArcDPSEnums.TrashID.CagedWarg:
                 case ArcDPSEnums.TrashID.GreenSpirit1:
                 case ArcDPSEnums.TrashID.GreenSpirit2:
@@ -507,14 +507,14 @@ namespace GW2EIEvtcParser
                 case ArcDPSEnums.TrashID.Prisoner1:
                 case ArcDPSEnums.TrashID.Prisoner2:
                 case ArcDPSEnums.TrashID.Pylon1:
-                    return "https://i.imgur.com/0koP4xB.png";
+                    return "../cache/images/https_i.imgur.com_0koP4xB.png";
                 case ArcDPSEnums.TrashID.FleshWurm:
-                    return "https://i.imgur.com/o3vX9Zc.png";
+                    return "../cache/images/https_i.imgur.com_o3vX9Zc.png";
                 case ArcDPSEnums.TrashID.Hands:
-                    return "https://i.imgur.com/8JRPEoo.png";
+                    return "../cache/images/https_i.imgur.com_8JRPEoo.png";
                 case ArcDPSEnums.TrashID.TemporalAnomaly:
                 case ArcDPSEnums.TrashID.TemporalAnomaly2:
-                    return "https://i.imgur.com/MIpP5pK.png";
+                    return "../cache/images/https_i.imgur.com_MIpP5pK.png";
                 case ArcDPSEnums.TrashID.DOC:
                 case ArcDPSEnums.TrashID.BLIGHT:
                 case ArcDPSEnums.TrashID.PLINK:
@@ -523,19 +523,19 @@ namespace GW2EIEvtcParser
                 case ArcDPSEnums.TrashID.FreeziesFrozenHeart:
                     return "https://wiki.guildwars2.com/images/9/9e/Mini_Freezie%27s_Heart.png";
                 case ArcDPSEnums.TrashID.RiverOfSouls:
-                    return "https://i.imgur.com/4pXEnaX.png";
+                    return "../cache/images/https_i.imgur.com_4pXEnaX.png";
                 case ArcDPSEnums.TrashID.DhuumDesmina:
-                    return "https://i.imgur.com/jAiRplg.png";
+                    return "../cache/images/https_i.imgur.com_jAiRplg.png";
                 //case CastleFountain:
-                //    return "https://i.imgur.com/xV0OPWL.png";
+                //    return "../cache/images/https_i.imgur.com_xV0OPWL.png";
                 case ArcDPSEnums.TrashID.HauntingStatue:
-                    return "https://i.imgur.com/7IQDyuK.png";
+                    return "../cache/images/https_i.imgur.com_7IQDyuK.png";
                 case ArcDPSEnums.TrashID.GreenKnight:
                 case ArcDPSEnums.TrashID.RedKnight:
                 case ArcDPSEnums.TrashID.BlueKnight:
-                    return "https://i.imgur.com/lpBm4d6.png";
+                    return "../cache/images/https_i.imgur.com_lpBm4d6.png";
             }
-            return "https://i.imgur.com/HuJHqRZ.png";
+            return "../cache/images/https_i.imgur.com_HuJHqRZ.png";
         }
 
 

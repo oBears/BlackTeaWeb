@@ -148,24 +148,24 @@ namespace GW2EIEvtcParser.ParsedData
             {29604, "https://wiki.guildwars2.com/images/8/82/Chilling_Nova.png" },
             // Weaver attunements
             {Buff.FireDual, "https://wiki.guildwars2.com/images/b/b4/Fire_Attunement.png" },
-            {Buff.FireWater, "https://i.imgur.com/ihqKuUJ.png" },
-            {Buff.FireAir, "https://i.imgur.com/kKFJ8cT.png" },
-            {Buff.FireEarth, "https://i.imgur.com/T4187h0.png" },
+            {Buff.FireWater, "../cache/images/https_i.imgur.com_ihqKuUJ.png" },
+            {Buff.FireAir, "../cache/images/https_i.imgur.com_kKFJ8cT.png" },
+            {Buff.FireEarth, "../cache/images/https_i.imgur.com_T4187h0.png" },
 
             {Buff.WaterDual, "https://wiki.guildwars2.com/images/3/31/Water_Attunement.png" },
-            {Buff.WaterFire, "https://i.imgur.com/vMUkzxH.png" },
-            {Buff.WaterAir, "https://i.imgur.com/5G5OFud.png" },
-            {Buff.WaterEarth, "https://i.imgur.com/QKEtF2P.png" },
+            {Buff.WaterFire, "../cache/images/https_i.imgur.com_vMUkzxH.png" },
+            {Buff.WaterAir, "../cache/images/https_i.imgur.com_5G5OFud.png" },
+            {Buff.WaterEarth, "../cache/images/https_i.imgur.com_QKEtF2P.png" },
 
             {Buff.AirDual, "https://wiki.guildwars2.com/images/9/91/Air_Attunement.png" },
-            {Buff.AirFire, "https://i.imgur.com/vf68GJm.png" },
-            {Buff.AirWater, "https://i.imgur.com/Tuj5Sro.png" },
-            {Buff.AirEarth, "https://i.imgur.com/lHcOSwk.png" },
+            {Buff.AirFire, "../cache/images/https_i.imgur.com_vf68GJm.png" },
+            {Buff.AirWater, "../cache/images/https_i.imgur.com_Tuj5Sro.png" },
+            {Buff.AirEarth, "../cache/images/https_i.imgur.com_lHcOSwk.png" },
 
             {Buff.EarthDual, "https://wiki.guildwars2.com/images/a/a8/Earth_Attunement.png" },
-            {Buff.EarthFire, "https://i.imgur.com/aJWvE0I.png" },
-            {Buff.EarthWater, "https://i.imgur.com/jtjj2TG.png" },
-            {Buff.EarthAir, "https://i.imgur.com/4Eti7Pb.png" },
+            {Buff.EarthFire, "../cache/images/https_i.imgur.com_aJWvE0I.png" },
+            {Buff.EarthWater, "../cache/images/https_i.imgur.com_jtjj2TG.png" },
+            {Buff.EarthAir, "../cache/images/https_i.imgur.com_4Eti7Pb.png" },
         };
 
         private static readonly Dictionary<long, ulong> _nonCritable = new Dictionary<long, ulong>

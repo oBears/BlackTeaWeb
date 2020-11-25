@@ -72,7 +72,7 @@ namespace GW2EIEvtcParser.EncounterLogic
             new EnemyBuffApplyMechanic(61435, "Cacophonous Mind", new MechanicPlotlySetting("pentagon","rgb(150,125,255)"), "Ccphns.Mnd.","Cacophonous Mind", "Cacophonous Mind",0),
             });
             Extension = "ai";
-            Icon = "https://i.imgur.com/3mlCdI9.png";
+            Icon = "../cache/images/https_i.imgur.com_3mlCdI9.png";
         }
 
         internal override string GetLogicName(ParsedEvtcLog log)

@@ -1,4 +1,4 @@
-//// BASE MECHANIC
+﻿//// BASE MECHANIC
 class MechanicDrawable {
     constructor(start, end, connectedTo) {
         this.start = start;

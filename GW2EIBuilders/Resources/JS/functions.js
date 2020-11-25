@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+﻿/*jshint esversion: 6 */
 "use strict";
 function computeGradient(left, percent) {
     var template = "linear-gradient(to right, $fill$, $middle$, $black$)";
