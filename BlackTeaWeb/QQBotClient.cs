@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
+using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,16 +14,14 @@ namespace BlackTeaWeb
 
     public static class QQBotClient
     {
-        private static Uri _uri;
-        private static string _wwwroot;
-        private static string _siteUrl;
+        private static Uri _wsUri;
         private static IWebsocketClient client;
+        private static BotConfig botConfig;
 
-        public static void Start(string url, string wwwroot, string siteUrl)
+        public static void Start(BotConfig config)
         {
-            _uri = new Uri(url);
-            _wwwroot = wwwroot;
-            _siteUrl = siteUrl;
+            botConfig = config;
+            _wsUri = new Uri(config.GetBotSocketURL());
             var factory = new Func<ClientWebSocket>(() =>
             {
                 var client = new ClientWebSocket
@@ -35,7 +34,7 @@ namespace BlackTeaWeb
 
                 return client;
             });
-            client = new WebsocketClient(_uri, factory)
+            client = new WebsocketClient(_wsUri, factory)
             {
                 Name = "BlackTeaWeb",
                 ReconnectTimeout = TimeSpan.FromSeconds(30),
@@ -88,11 +87,30 @@ namespace BlackTeaWeb
             client.Start();
         }
 
-        public static void SendBotMessage(string action, object @params)
+
+        private static object SendBotMessageAndReturn(string action, object data)
         {
+            using var cli = new WebClient();
             var jsonSetting = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
-            var jsonStr = JsonConvert.SerializeObject(new { action, @params }, jsonSetting);
-            client.Send(jsonStr);
+            cli.Headers[HttpRequestHeader.ContentType] = "application/json";
+            var requestUrl = botConfig.GetBotHttpURL(action);
+            var response = data == null ? cli.DownloadString(requestUrl) : cli.UploadString(requestUrl, JsonConvert.SerializeObject(data, jsonSetting));
+            var qqBotHttpResponse = JsonConvert.DeserializeObject<QQBotHttpResponse>(response);
+            if (qqBotHttpResponse.RetCode > 1)
+                throw new Exception($"QQBot请求出错,状态码：{qqBotHttpResponse.RetCode}");
+            return qqBotHttpResponse.Data;
+        }
+        private static void SendBotMessage(string action, object data = null)
+        {
+            SendBotMessageAndReturn(action, data);
+        }
+        private static JArray GetArrayBotMesssage(string action, object data = null)
+        {
+            return JArray.FromObject(SendBotMessageAndReturn(action, data));
+        }
+        private static JObject GetObjectBotMesssage(string action, object data = null)
+        {
+            return JObject.FromObject(SendBotMessageAndReturn(action, data));
         }
         public static void SendGroupMessage(long group_id, string message)
         {
@@ -109,6 +127,18 @@ namespace BlackTeaWeb
         public static void SetGroupAddRequest(string flag, string sub_type, string reason, bool approve)
         {
             SendBotMessage("set_group_add_request", new { flag, sub_type, reason, approve });
+        }
+        public static JObject GetMsg(int message_id)
+        {
+            return GetObjectBotMesssage("get_msg", new { message_id });
+        }
+        public static JArray GetFriendList()
+        {
+            return GetArrayBotMesssage("get_friend_list");
+        }
+        public static JObject GetLoginInfo()
+        {
+            return GetObjectBotMesssage("get_login_info");
         }
         public static string At(long qq)
         {
@@ -142,10 +172,10 @@ namespace BlackTeaWeb
                             sendMessage.AppendLine($"指挥官手册");
                             var handbookTasks = await GW2Api.GetHandBookTasksAsync();
                             sendMessage.AppendLine(handbookTasks);
-         
+
                             SendGroupMessage(groupId, sendMessage.ToString());
                         }
-    
+
                         break;
                     case "菜单":
                         {
@@ -162,7 +192,7 @@ namespace BlackTeaWeb
                         break;
                     case "懒人":
                         {
-                            
+
                             var sendMessage = new StringBuilder();
                             var codeStr = await GW2Api.GetPVEFast();
                             sendMessage.AppendLine(codeStr);
@@ -175,6 +205,12 @@ namespace BlackTeaWeb
                             var codeStr = await GW2Api.GetGameDaily();
                             sendMessage.AppendLine(codeStr);
                             SendGroupMessage(groupId, sendMessage.ToString());
+                        }
+                        break;
+                    case "机器人状态":
+                        {
+                            var obj = GetLoginInfo();
+                            SendGroupMessage(groupId, $"QQ号：{obj.Get<string>("user_id	")}\r\n昵称：{obj.Get<string>("nickname")}");
                         }
                         break;
                     default:
@@ -190,7 +226,6 @@ namespace BlackTeaWeb
             sendMessage.AppendLine("2 gw2商人");
             sendMessage.AppendLine("3 gw2懒人");
             sendMessage.AppendLine("4 gw2游戏日常");
-            
             sendMessage.AppendLine("ps.上传日志自动解析");
             SendGroupMessage(groupId, sendMessage.ToString());
         }
@@ -201,12 +236,12 @@ namespace BlackTeaWeb
             if (".zevtc,.evtc".Contains(fileExt, StringComparison.OrdinalIgnoreCase))
             {
                 var guid = Guid.NewGuid().ToString("N");
-                var evtcFileName = Path.Combine(_wwwroot, "files", $"{guid}{fileExt}");
-                var htmlFileName = Path.Combine(_wwwroot, "files", $"{guid}.html");
+                var evtcFileName = Path.Combine(botConfig.WebRoot, "files", $"{guid}{fileExt}");
+                var htmlFileName = Path.Combine(botConfig.WebRoot, "files", $"{guid}.html");
                 SendGroupMessage(groupId, $"{At(senderId)}正在解析日志文件,请耐心等待！");
                 await DownloadHelper.DownloadAsync(fileUrl, evtcFileName);
                 ParseHelper.Parse(evtcFileName, htmlFileName);
-                SendGroupMessage(groupId, $"{At(senderId)}解析完成,点击链接查看, {_siteUrl}/files/{guid}.html");
+                SendGroupMessage(groupId, $"{At(senderId)}解析完成,点击链接查看, {botConfig.GetWebURL("files/{guid}.html")}");
                 try
                 {
                     File.Delete(evtcFileName);
@@ -220,4 +255,13 @@ namespace BlackTeaWeb
         }
 
     }
+
+    public class QQBotHttpResponse
+    {
+        public string Status { set; get; }
+        public int RetCode { set; get; }
+        public object Data { set; get; }
+    }
+
+
 }

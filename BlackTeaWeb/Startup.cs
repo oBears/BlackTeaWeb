@@ -33,10 +33,15 @@ namespace BlackTeaWeb
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             GW2Api.Init(env.WebRootPath);
-            //��ʼ��EI��������
             ParseHelper.Init(Path.Combine(env.WebRootPath, "cache"));
-            //����qq������
-            QQBotClient.Start(Configuration.GetValue<string>("QQBotURL"), env.WebRootPath, Configuration.GetValue<string>("SiteURL"));
+            var botConfig = Configuration.GetSection("BotConfig").Get<BotConfig>();
+            botConfig.WebRoot = env.WebRootPath;
+
+
+            QQBotClient.Start(botConfig);
+
+
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
