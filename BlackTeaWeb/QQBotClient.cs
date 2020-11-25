@@ -317,7 +317,7 @@ namespace BlackTeaWeb
                 SendGroupMessage(groupId, $"{At(senderId)}正在解析日志文件,请耐心等待！");
                 await DownloadHelper.DownloadAsync(fileUrl, evtcFileName);
                 ParseHelper.Parse(evtcFileName, htmlFileName);
-                SendGroupMessage(groupId, $"{At(senderId)}解析完成,点击链接查看, {botConfig.GetWebURL("files/{guid}.html")}");
+                SendGroupMessage(groupId, $"{At(senderId)}解析完成,点击链接查看, {botConfig.GetWebURL($"files/{guid}.html")}");
                 try
                 {
                     File.Delete(evtcFileName);
