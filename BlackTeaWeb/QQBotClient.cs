@@ -52,7 +52,8 @@ namespace BlackTeaWeb
                         {
                             var groupId = obj.Get<long>("group_id");
                             var rawMessage = obj.Get<string>("raw_message");
-                            await OnGroupMessageAsync(groupId, rawMessage);
+                            var senderId = obj.Get<long>("user_id");
+                            await OnGroupMessageAsync(groupId, senderId, rawMessage);
                         }
                         break;
                     case "notice":
@@ -144,7 +145,7 @@ namespace BlackTeaWeb
         {
             return $"[CQ:at,qq={qq}]";
         }
-        private static async Task OnGroupMessageAsync(long groupId, string rawMessage)
+        private static async Task OnGroupMessageAsync(long groupId, long senderId, string rawMessage)
         {
             //at机器人 回复帮助
             if (rawMessage == "[CQ:at,qq=2778769763]")
@@ -157,6 +158,18 @@ namespace BlackTeaWeb
             if (Regex.IsMatch(rawMessage, "[^gw2]"))
             {
                 var cmd = rawMessage.Replace("gw2", string.Empty);
+                //处理招募信息
+                if (cmd.IndexOf("RecruitInsert") >= 0)
+                {
+                    ProcessRecuritInsert(groupId, senderId, rawMessage);
+                    return;
+                }
+
+                if (cmd.IndexOf("联系") >= 0)
+                {
+                    ProcessConnect(groupId, senderId, rawMessage);
+                    return;
+                }
                 switch (cmd)
                 {
                     case "":
@@ -213,9 +226,72 @@ namespace BlackTeaWeb
                             SendGroupMessage(groupId, $"QQ号：{obj.Get<string>("user_id	")}\r\n昵称：{obj.Get<string>("nickname")}");
                         }
                         break;
+                    case "招募":
+                        {
+                            var sendMessage = new StringBuilder();
+                            var codeStr = GW2Recruit.GetRecruitLst();
+                            sendMessage.AppendLine(codeStr);
+                            SendGroupMessage(groupId, sendMessage.ToString());
+                        }
+                        break;
                     default:
                         break;
                 }
+            }
+        }
+        private static void ProcessConnect(long groupId, long senderId, string rawMessage)
+        {
+            var splits = rawMessage.Split('|');
+
+            if (splits.Length > 2)
+            {
+                var id = Convert.ToInt32(splits[1]);
+                var content = splits[2];
+
+                var info = GW2Recruit.GetRecruitInfo(id);
+                if (info == null)
+                {
+                    //告知sender
+                    var sendMessage = new StringBuilder();
+                    var codeStr = $"没有这个发布项 id={id}！";
+                    sendMessage.AppendLine(codeStr);
+                    SendGroupMessage(groupId, sendMessage.ToString());
+                }
+                else
+                {
+                    //告知sender
+                    var sendMessage = new StringBuilder();
+                    var codeStr = "消息已发送！";
+                    sendMessage.AppendLine(codeStr);
+                    SendGroupMessage(groupId, sendMessage.ToString());
+
+                    sendMessage = new StringBuilder();
+                    var privateMsgStr = $"sender={senderId} {content}";
+                    sendMessage.AppendLine(privateMsgStr);
+
+                    SendPrivateMessage(info.senderId, privateMsgStr);
+                }
+            }
+
+
+        }
+
+        private static void ProcessRecuritInsert(long groupId, long senderId, string rawMessage)
+        {
+            if (senderId != 420975789)
+            {
+                var sendMessage = new StringBuilder();
+                var codeStr = "请使用管理员账号发布";
+                sendMessage.AppendLine(codeStr);
+                SendGroupMessage(groupId, sendMessage.ToString());
+            }
+            else
+            {
+                GW2Recruit.InsertRecruit(senderId, rawMessage);
+                var sendMessage = new StringBuilder();
+                var codeStr = "发布成功!";
+                sendMessage.AppendLine(codeStr);
+                SendGroupMessage(groupId, sendMessage.ToString());
             }
         }
 

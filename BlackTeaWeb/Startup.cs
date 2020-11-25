@@ -32,11 +32,12 @@ namespace BlackTeaWeb
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            GW2Recruit.Init();
             GW2Api.Init(env.WebRootPath);
             ParseHelper.Init(Path.Combine(env.WebRootPath, "cache"));
             var botConfig = Configuration.GetSection("BotConfig").Get<BotConfig>();
             botConfig.WebRoot = env.WebRootPath;
-
+          
 
             QQBotClient.Start(botConfig);
 
