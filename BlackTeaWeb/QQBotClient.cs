@@ -280,7 +280,7 @@ namespace BlackTeaWeb
         private static async Task AnswerAddRecruit(long groupId)
         {
             var sendMessage = new StringBuilder();
-            sendMessage.AppendLine("【回复此条 内容】");
+            sendMessage.AppendLine("【发布:回复此条 内容】");
 
             var msg = SendGroupMessage(groupId, sendMessage.ToString());
             var msgId = msg.Get<int>("message_id");
@@ -298,7 +298,7 @@ namespace BlackTeaWeb
         private static async Task AnswerRecruitLst(long groupId)
         {
             var sendMessage = new StringBuilder();
-            sendMessage.AppendLine("【回复此条 id|内容 例如:123|我会辅助输出1-23全通】");
+            sendMessage.AppendLine("【招募:回复此条 id|内容 例如:123|我会辅助输出1-23全通】");
 
             var codeStr = GW2Recruit.GetRecruitLst();
             sendMessage.AppendLine(codeStr);
