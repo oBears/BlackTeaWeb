@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.WebSockets;
@@ -17,6 +18,11 @@ namespace BlackTeaWeb
         private static Uri _wsUri;
         private static IWebsocketClient client;
         private static BotConfig botConfig;
+
+        private static Dictionary<long, int> group2helpIdDic = new Dictionary<long, int>();
+        private static Dictionary<long, int> group2ConnectDic = new Dictionary<long, int>();
+        private static Dictionary<long, int> group2InputRecruitDic = new Dictionary<long, int>();
+
 
         public static void Start(BotConfig config)
         {
@@ -113,9 +119,9 @@ namespace BlackTeaWeb
         {
             return JObject.FromObject(SendBotMessageAndReturn(action, data));
         }
-        public static void SendGroupMessage(long group_id, string message)
+        public static JObject SendGroupMessage(long group_id, string message)
         {
-            SendBotMessage("send_group_msg", new { group_id, message, auto_escape = false });
+            return GetObjectBotMesssage("send_group_msg", new { group_id, message, auto_escape = false });
         }
         public static void SendPrivateMessage(long user_id, string message)
         {
@@ -154,39 +160,66 @@ namespace BlackTeaWeb
                 return;
             }
 
+            var replyIdObj = Regex.Match(rawMessage, @"(?<=\[CQ:reply,id=)[\s\S]+?(?=\])");
+            if (replyIdObj.Success)
+            {
+                if (int.TryParse(replyIdObj.ToString(), out var replyId))
+                {
+                    var msgId = 0;
+                    //是回复帮助
+                    if (group2helpIdDic.TryGetValue(groupId, out msgId))
+                    {
+                        if (msgId == replyId)
+                        {
+                            var match = Regex.Match(rawMessage, @"(?<=\[CQ:at,qq=[\s\S]+\]\s)[^\[]");
+                            if (match.Success)
+                            {
+                                if (int.TryParse(match.ToString(), out var cmdId))
+                                {
+                                    HelpActionAsync(groupId, cmdId);
+                                }
+                            }
+                        }
+                    }
+
+                    //是回复招募
+                    if (group2ConnectDic.TryGetValue(groupId, out msgId))
+                    {
+                        var match = Regex.Match(rawMessage, @"(?<=\[CQ:at,qq=[\s\S]+\]\s)[^\[][\s\S]*");
+
+                        if (match.Success)
+                        {
+                            ProcessConnect(groupId, senderId, match.ToString());
+                        }
+                    }
+
+                    //是回复发布
+                    if (group2InputRecruitDic.TryGetValue(groupId, out msgId))
+                    {
+                        var match = Regex.Match(rawMessage, @"(?<=\[CQ:at,qq=[\s\S]+\]\s)[^\[][\s\S]*");
+
+                        if (match.Success)
+                        {
+                            ProcessRecuritInsert(groupId, senderId, match.ToString());
+                        }
+                    }
+                }
+
+                return;
+            }
+
             //处理gw2开头信息
             if (Regex.IsMatch(rawMessage, "[^gw2]"))
             {
                 var cmd = rawMessage.Replace("gw2", string.Empty);
-                //处理招募信息
-                if (cmd.IndexOf("RecruitInsert") >= 0)
-                {
-                    ProcessRecuritInsert(groupId, senderId, rawMessage);
-                    return;
-                }
 
-                if (cmd.IndexOf("联系") >= 0)
-                {
-                    ProcessConnect(groupId, senderId, rawMessage);
-                    return;
-                }
                 switch (cmd)
                 {
                     case "":
                         break;
                     case "日常":
                         {
-                            var sendMessage = new StringBuilder();
-                            var curDate = DateTime.Now.ToString("yyyy-MM-dd");
-                            sendMessage.AppendLine($"{curDate} 积分日常");
-                            var scoreTasks = await GW2Api.GetScoreTasksAsync(curDate);
-                            sendMessage.AppendLine(scoreTasks);
-
-                            sendMessage.AppendLine($"指挥官手册");
-                            var handbookTasks = await GW2Api.GetHandBookTasksAsync();
-                            sendMessage.AppendLine(handbookTasks);
-
-                            SendGroupMessage(groupId, sendMessage.ToString());
+                            await AnwerWebDaily(groupId);
                         }
 
                         break;
@@ -197,27 +230,17 @@ namespace BlackTeaWeb
                         break;
                     case "商人":
                         {
-                            var sendMessage = new StringBuilder();
-                            var codeStr = await GW2Api.GetTraderCodeAsync();
-                            sendMessage.AppendLine(codeStr);
-                            SendGroupMessage(groupId, sendMessage.ToString());
+                            await AnwerTrader(groupId);
                         }
                         break;
                     case "懒人":
                         {
-
-                            var sendMessage = new StringBuilder();
-                            var codeStr = await GW2Api.GetPVEFast();
-                            sendMessage.AppendLine(codeStr);
-                            SendGroupMessage(groupId, sendMessage.ToString());
+                            await AnwerPVEFast(groupId);
                         }
                         break;
                     case "游戏日常":
                         {
-                            var sendMessage = new StringBuilder();
-                            var codeStr = await GW2Api.GetGameDaily();
-                            sendMessage.AppendLine(codeStr);
-                            SendGroupMessage(groupId, sendMessage.ToString());
+                            await AnwerGameDaily(groupId);
                         }
                         break;
                     case "机器人状态":
@@ -228,10 +251,12 @@ namespace BlackTeaWeb
                         break;
                     case "招募":
                         {
-                            var sendMessage = new StringBuilder();
-                            var codeStr = GW2Recruit.GetRecruitLst();
-                            sendMessage.AppendLine(codeStr);
-                            SendGroupMessage(groupId, sendMessage.ToString());
+                            AnswerRecruitLst(groupId);
+                        }
+                        break;
+                    case "发布":
+                        {
+                            AnswerAddRecruit(groupId);
                         }
                         break;
                     default:
@@ -239,14 +264,117 @@ namespace BlackTeaWeb
                 }
             }
         }
-        private static void ProcessConnect(long groupId, long senderId, string rawMessage)
-        {
-            var splits = rawMessage.Split('|');
 
-            if (splits.Length > 2)
+        private static async Task AnswerAddRecruit(long groupId)
+        {
+            var sendMessage = new StringBuilder();
+            sendMessage.AppendLine("【回复此条 内容】");
+
+            var msg = SendGroupMessage(groupId, sendMessage.ToString());
+            var msgId = msg.Get<int>("message_id");
+
+            if (group2InputRecruitDic.ContainsKey(groupId))
             {
-                var id = Convert.ToInt32(splits[1]);
-                var content = splits[2];
+                group2InputRecruitDic[groupId] = msgId;
+            }
+            else
+            {
+                group2InputRecruitDic.Add(groupId, msgId);
+            }
+        }
+
+        private static async Task AnswerRecruitLst(long groupId)
+        {
+            var sendMessage = new StringBuilder();
+            sendMessage.AppendLine("【回复此条 id|内容 例如:123|我会辅助输出1-23全通】");
+
+            var codeStr = GW2Recruit.GetRecruitLst();
+            sendMessage.AppendLine(codeStr);
+            var msg = SendGroupMessage(groupId, sendMessage.ToString());
+            var msgId = msg.Get<int>("message_id");
+
+            if (group2ConnectDic.ContainsKey(groupId))
+            {
+                group2ConnectDic[groupId] = msgId;
+            }
+            else
+            {
+                group2ConnectDic.Add(groupId, msgId);
+            }
+        }
+
+        private static async Task AnwerGameDaily(long groupId)
+        {
+            var sendMessage = new StringBuilder();
+            var codeStr = await GW2Api.GetGameDaily();
+            sendMessage.AppendLine(codeStr);
+            SendGroupMessage(groupId, sendMessage.ToString());
+        }
+
+        private static async Task AnwerPVEFast(long groupId)
+        {
+            var sendMessage = new StringBuilder();
+            var codeStr = await GW2Api.GetPVEFast();
+            sendMessage.AppendLine(codeStr);
+            SendGroupMessage(groupId, sendMessage.ToString());
+        }
+
+        private static async Task AnwerTrader(long groupId)
+        {
+            var sendMessage = new StringBuilder();
+            var codeStr = await GW2Api.GetTraderCodeAsync();
+            sendMessage.AppendLine(codeStr);
+            SendGroupMessage(groupId, sendMessage.ToString());
+        }
+
+        private static async Task AnwerWebDaily(long groupId)
+        {
+            var sendMessage = new StringBuilder();
+            var curDate = DateTime.Now.ToString("yyyy-MM-dd");
+            sendMessage.AppendLine($"{curDate} 积分日常");
+            var scoreTasks = await GW2Api.GetScoreTasksAsync(curDate);
+            sendMessage.AppendLine(scoreTasks);
+
+            sendMessage.AppendLine($"指挥官手册");
+            var handbookTasks = await GW2Api.GetHandBookTasksAsync();
+            sendMessage.AppendLine(handbookTasks);
+
+            SendGroupMessage(groupId, sendMessage.ToString());
+        }
+
+        private static async Task HelpActionAsync(long groupId, int cmd)
+        {
+
+            switch(cmd)
+            {
+                case 1:
+                    await AnwerWebDaily(groupId);
+                    break;
+                case 2:
+                    await AnwerTrader(groupId);
+                    break;
+                case 3:
+                    await AnwerPVEFast(groupId);
+                    break;
+                case 4:
+                    await AnwerGameDaily(groupId);
+                    break;
+                case 5:
+                    await AnswerRecruitLst(groupId);
+                    break;
+                case 6:
+                    await AnswerAddRecruit(groupId);
+                    break;
+            }
+        }
+
+        private static void ProcessAddRecruit(long groupId, long senderId, string rawMessage)
+        {
+
+            if (splits.Length > 1)
+            {
+                var id = int.Parse(splits[0]);
+                var content = splits[1];
 
                 var info = GW2Recruit.GetRecruitInfo(id);
                 if (info == null)
@@ -272,39 +400,96 @@ namespace BlackTeaWeb
                     SendPrivateMessage(info.senderId, privateMsgStr);
                 }
             }
+        }
 
+        private static void ProcessConnect(long groupId, long senderId, string rawMessage)
+        {
+            var splits = rawMessage.Split('|');
+            if (splits.Length > 1)
+            {
+                var id = int.Parse(splits[0]);
+                var content = splits[1];
 
+                var info = GW2Recruit.GetRecruitInfo(id);
+                if (info == null)
+                {
+                    //告知sender
+                    var sendMessage = new StringBuilder();
+                    var codeStr = $"没有这个发布项 id={id}！";
+                    sendMessage.AppendLine(codeStr);
+                    SendGroupMessage(groupId, sendMessage.ToString());
+                }
+                else
+                {
+                    //告知sender
+                    var sendMessage = new StringBuilder();
+                    var codeStr = "消息已发送！";
+                    sendMessage.AppendLine(codeStr);
+                    SendGroupMessage(groupId, sendMessage.ToString());
+
+                    sendMessage = new StringBuilder();
+                    var privateMsgStr = $"sender={senderId} {content}";
+                    sendMessage.AppendLine(privateMsgStr);
+
+                    SendPrivateMessage(info.senderId, privateMsgStr);
+                }
+            }
         }
 
         private static void ProcessRecuritInsert(long groupId, long senderId, string rawMessage)
         {
-            if (senderId != 420975789)
+            //if (senderId != 420975789)
+            //{
+            //    var sendMessage = new StringBuilder();
+            //    var codeStr = "请使用管理员账号发布";
+            //    sendMessage.AppendLine(codeStr);
+            //    SendGroupMessage(groupId, sendMessage.ToString());
+            //}
+            //else
             {
-                var sendMessage = new StringBuilder();
-                var codeStr = "请使用管理员账号发布";
-                sendMessage.AppendLine(codeStr);
-                SendGroupMessage(groupId, sendMessage.ToString());
-            }
-            else
-            {
-                GW2Recruit.InsertRecruit(senderId, rawMessage);
-                var sendMessage = new StringBuilder();
-                var codeStr = "发布成功!";
-                sendMessage.AppendLine(codeStr);
-                SendGroupMessage(groupId, sendMessage.ToString());
+                if (GW2Recruit.IsRecruiting(senderId))
+                {
+                    var sendMessage = new StringBuilder();
+                    var codeStr = "请勿重复发布信息!";
+                    sendMessage.AppendLine(codeStr);
+                    SendGroupMessage(groupId, sendMessage.ToString());
+                    return;
+                }
+                else
+                {
+                    GW2Recruit.InsertRecruit(senderId, rawMessage);
+                    var sendMessage = new StringBuilder();
+                    var codeStr = "发布成功!";
+                    sendMessage.AppendLine(codeStr);
+                    SendGroupMessage(groupId, sendMessage.ToString());
+                }
             }
         }
 
         private static void AnswerHelp(long groupId)
         {
             var sendMessage = new StringBuilder();
+            sendMessage.AppendLine("【回复此条数字执行命令】");
             sendMessage.AppendLine("1 gw2日常");
             sendMessage.AppendLine("2 gw2商人");
             sendMessage.AppendLine("3 gw2懒人");
             sendMessage.AppendLine("4 gw2游戏日常");
+            sendMessage.AppendLine("5 gw2招募(测试功能)");
+            sendMessage.AppendLine("6 gw2发布(测试功能)");
             sendMessage.AppendLine("ps.上传日志自动解析");
-            SendGroupMessage(groupId, sendMessage.ToString());
+            var msg = SendGroupMessage(groupId, sendMessage.ToString());
+            var msgId = msg.Get<int>("message_id");
+
+            if (group2helpIdDic.ContainsKey(groupId))
+            {
+                group2helpIdDic[groupId] = msgId;
+            }
+            else
+            {
+                group2helpIdDic.Add(groupId, msgId);
+            }
         }
+
         private static async Task OnGroupUploadAsync(long groupId, long senderId, string fileName, string fileUrl)
         {
             //处理 dps 日志文件

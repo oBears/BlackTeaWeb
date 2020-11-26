@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace BlackTeaWeb
 {
@@ -23,6 +24,7 @@ namespace BlackTeaWeb
 
         public IConfiguration Configuration { get; }
 
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -32,7 +34,7 @@ namespace BlackTeaWeb
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            GW2Recruit.Init();
+            GW2Recruit.Init(env.WebRootPath);
             GW2Api.Init(env.WebRootPath);
             ParseHelper.Init(Path.Combine(env.WebRootPath, "cache"));
             var botConfig = Configuration.GetSection("BotConfig").Get<BotConfig>();

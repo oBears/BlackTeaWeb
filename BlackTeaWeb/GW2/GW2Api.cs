@@ -73,7 +73,7 @@ namespace BlackTeaWeb
             List<int> idLst = new List<int>();
             foreach (var data in obj["pve"])
             {
-                if ((int)data["level"]["min"] == 80 && (int)data["level"]["max"] == 80)
+                if ((int)data["level"]["max"] == 80)
                 {
                     idLst.Add((int)data["id"]);
                 }
