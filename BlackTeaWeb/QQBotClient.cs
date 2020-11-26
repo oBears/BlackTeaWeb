@@ -179,28 +179,40 @@ namespace BlackTeaWeb
                                     HelpActionAsync(groupId, cmdId);
                                 }
                             }
+
+                            return;
                         }
                     }
 
                     //是回复招募
                     if (group2ConnectDic.TryGetValue(groupId, out msgId))
                     {
-                        var match = Regex.Match(rawMessage, @"(?<=\[CQ:at,qq=[\s\S]+\]\s)[^\[][\s\S]*");
-
-                        if (match.Success)
+                        if (msgId == replyId)
                         {
-                            ProcessConnect(groupId, senderId, match.ToString());
+                            var match = Regex.Match(rawMessage, @"(?<=\[CQ:at,qq=[\s\S]+\]\s)[^\[][\s\S]*");
+
+                            if (match.Success)
+                            {
+                                ProcessConnect(groupId, senderId, match.ToString());
+                            }
+
+                            return;
                         }
                     }
 
                     //是回复发布
                     if (group2InputRecruitDic.TryGetValue(groupId, out msgId))
                     {
-                        var match = Regex.Match(rawMessage, @"(?<=\[CQ:at,qq=[\s\S]+\]\s)[^\[][\s\S]*");
-
-                        if (match.Success)
+                        if (msgId == replyId)
                         {
-                            ProcessRecuritInsert(groupId, senderId, match.ToString());
+                            var match = Regex.Match(rawMessage, @"(?<=\[CQ:at,qq=[\s\S]+\]\s)[^\[][\s\S]*");
+
+                            if (match.Success)
+                            {
+                                ProcessRecuritInsert(groupId, senderId, match.ToString());
+                            }
+
+                            return;
                         }
                     }
                 }
@@ -368,39 +380,39 @@ namespace BlackTeaWeb
             }
         }
 
-        private static void ProcessAddRecruit(long groupId, long senderId, string rawMessage)
-        {
+        //private static void ProcessAddRecruit(long groupId, long senderId, string rawMessage)
+        //{
 
-            if (splits.Length > 1)
-            {
-                var id = int.Parse(splits[0]);
-                var content = splits[1];
+        //    if (splits.Length > 1)
+        //    {
+        //        var id = int.Parse(splits[0]);
+        //        var content = splits[1];
 
-                var info = GW2Recruit.GetRecruitInfo(id);
-                if (info == null)
-                {
-                    //告知sender
-                    var sendMessage = new StringBuilder();
-                    var codeStr = $"没有这个发布项 id={id}！";
-                    sendMessage.AppendLine(codeStr);
-                    SendGroupMessage(groupId, sendMessage.ToString());
-                }
-                else
-                {
-                    //告知sender
-                    var sendMessage = new StringBuilder();
-                    var codeStr = "消息已发送！";
-                    sendMessage.AppendLine(codeStr);
-                    SendGroupMessage(groupId, sendMessage.ToString());
+        //        var info = GW2Recruit.GetRecruitInfo(id);
+        //        if (info == null)
+        //        {
+        //            //告知sender
+        //            var sendMessage = new StringBuilder();
+        //            var codeStr = $"没有这个发布项 id={id}！";
+        //            sendMessage.AppendLine(codeStr);
+        //            SendGroupMessage(groupId, sendMessage.ToString());
+        //        }
+        //        else
+        //        {
+        //            //告知sender
+        //            var sendMessage = new StringBuilder();
+        //            var codeStr = "消息已发送！";
+        //            sendMessage.AppendLine(codeStr);
+        //            SendGroupMessage(groupId, sendMessage.ToString());
 
-                    sendMessage = new StringBuilder();
-                    var privateMsgStr = $"sender={senderId} {content}";
-                    sendMessage.AppendLine(privateMsgStr);
+        //            sendMessage = new StringBuilder();
+        //            var privateMsgStr = $"sender={senderId} {content}";
+        //            sendMessage.AppendLine(privateMsgStr);
 
-                    SendPrivateMessage(info.senderId, privateMsgStr);
-                }
-            }
-        }
+        //            SendPrivateMessage(info.senderId, privateMsgStr);
+        //        }
+        //    }
+        //}
 
         private static void ProcessConnect(long groupId, long senderId, string rawMessage)
         {
@@ -502,7 +514,7 @@ namespace BlackTeaWeb
                 SendGroupMessage(groupId, $"{At(senderId)}正在解析日志文件,请耐心等待！");
                 await DownloadHelper.DownloadAsync(fileUrl, evtcFileName);
                 ParseHelper.Parse(evtcFileName, htmlFileName);
-                SendGroupMessage(groupId, $"{At(senderId)}解析完成,点击链接查看, {botConfig.GetWebURL("files/{guid}.html")}");
+                SendGroupMessage(groupId, $"{At(senderId)}解析完成,点击链接查看, {botConfig.GetWebURL($"files/{guid}.html")}");
                 try
                 {
                     File.Delete(evtcFileName);

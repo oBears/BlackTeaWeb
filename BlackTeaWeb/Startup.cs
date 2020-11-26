@@ -39,8 +39,8 @@ namespace BlackTeaWeb
             ParseHelper.Init(Path.Combine(env.WebRootPath, "cache"));
             var botConfig = Configuration.GetSection("BotConfig").Get<BotConfig>();
             botConfig.WebRoot = env.WebRootPath;
-          
 
+            MongoDbHelper.Init(Configuration.GetValue<string>("MongoDb"));
             QQBotClient.Start(botConfig);
 
 
