@@ -459,22 +459,12 @@ namespace BlackTeaWeb
             //}
             //else
             {
-                if (GW2Recruit.IsRecruiting(senderId))
-                {
-                    var sendMessage = new StringBuilder();
-                    var codeStr = "请勿重复发布信息!";
-                    sendMessage.AppendLine(codeStr);
-                    SendGroupMessage(groupId, sendMessage.ToString());
-                    return;
-                }
-                else
-                {
-                    GW2Recruit.InsertRecruit(senderId, rawMessage);
-                    var sendMessage = new StringBuilder();
-                    var codeStr = "发布成功!";
-                    sendMessage.AppendLine(codeStr);
-                    SendGroupMessage(groupId, sendMessage.ToString());
-                }
+
+                GW2Recruit.InsertRecruit(senderId, rawMessage);
+                var sendMessage = new StringBuilder();
+                var codeStr = "发布成功!";
+                sendMessage.AppendLine(codeStr);
+                SendGroupMessage(groupId, sendMessage.ToString());
             }
         }
 
