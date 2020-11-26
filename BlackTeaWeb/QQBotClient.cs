@@ -419,7 +419,7 @@ namespace BlackTeaWeb
             var splits = rawMessage.Split('|');
             if (splits.Length > 1)
             {
-                var id = int.Parse(splits[0]);
+                var id = long.Parse(splits[0]);
                 var content = splits[1];
 
                 var info = GW2Recruit.GetRecruitInfo(id);
