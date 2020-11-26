@@ -155,7 +155,7 @@ namespace BlackTeaWeb
         private static async Task OnGroupMessageAsync(long groupId, long senderId, string rawMessage)
         {
             //at机器人 回复帮助
-            if (rawMessage == "[CQ:at,qq=2778769763]")
+            if (rawMessage.IndexOf("[CQ:at,qq=2778769763]") >= 0)
             {
                 AnswerHelp(groupId);
                 return;
@@ -301,7 +301,7 @@ namespace BlackTeaWeb
             var sendMessage = new StringBuilder();
             sendMessage.AppendLine("【招募:回复此条 id|内容 例如:123|我会辅助输出1-23全通】");
 
-            var codeStr = GW2Recruit.GetRecruitLst();
+            var codeStr = GW2Recruit.GetRecruitLstStr();
             sendMessage.AppendLine(codeStr);
             var msg = SendGroupMessage(groupId, sendMessage.ToString());
             var msgId = msg.Get<int>("message_id");
@@ -381,46 +381,12 @@ namespace BlackTeaWeb
             }
         }
 
-        //private static void ProcessAddRecruit(long groupId, long senderId, string rawMessage)
-        //{
-
-        //    if (splits.Length > 1)
-        //    {
-        //        var id = int.Parse(splits[0]);
-        //        var content = splits[1];
-
-        //        var info = GW2Recruit.GetRecruitInfo(id);
-        //        if (info == null)
-        //        {
-        //            //告知sender
-        //            var sendMessage = new StringBuilder();
-        //            var codeStr = $"没有这个发布项 id={id}！";
-        //            sendMessage.AppendLine(codeStr);
-        //            SendGroupMessage(groupId, sendMessage.ToString());
-        //        }
-        //        else
-        //        {
-        //            //告知sender
-        //            var sendMessage = new StringBuilder();
-        //            var codeStr = "消息已发送！";
-        //            sendMessage.AppendLine(codeStr);
-        //            SendGroupMessage(groupId, sendMessage.ToString());
-
-        //            sendMessage = new StringBuilder();
-        //            var privateMsgStr = $"sender={senderId} {content}";
-        //            sendMessage.AppendLine(privateMsgStr);
-
-        //            SendPrivateMessage(info.senderId, privateMsgStr);
-        //        }
-        //    }
-        //}
-
         private static void ProcessConnect(long groupId, long senderId, string rawMessage)
         {
             var splits = rawMessage.Split('|');
             if (splits.Length > 1)
             {
-                var id = int.Parse(splits[0]);
+                var id = long.Parse(splits[0]);
                 var content = splits[1];
 
                 var info = GW2Recruit.GetRecruitInfo(id);
@@ -460,22 +426,12 @@ namespace BlackTeaWeb
             //}
             //else
             {
-                if (GW2Recruit.IsRecruiting(senderId))
-                {
-                    var sendMessage = new StringBuilder();
-                    var codeStr = "请勿重复发布信息!";
-                    sendMessage.AppendLine(codeStr);
-                    SendGroupMessage(groupId, sendMessage.ToString());
-                    return;
-                }
-                else
-                {
-                    GW2Recruit.InsertRecruit(senderId, rawMessage);
-                    var sendMessage = new StringBuilder();
-                    var codeStr = "发布成功!";
-                    sendMessage.AppendLine(codeStr);
-                    SendGroupMessage(groupId, sendMessage.ToString());
-                }
+
+                GW2Recruit.InsertRecruit(senderId, rawMessage);
+                var sendMessage = new StringBuilder();
+                var codeStr = "发布成功!";
+                sendMessage.AppendLine(codeStr);
+                SendGroupMessage(groupId, sendMessage.ToString());
             }
         }
 
@@ -483,6 +439,7 @@ namespace BlackTeaWeb
         {
             var sendMessage = new StringBuilder();
             sendMessage.AppendLine("【回复此条数字执行命令】");
+            sendMessage.AppendLine($"当前招募数量{GW2Recruit.GetRecruitLstCount()}");
             sendMessage.AppendLine("1 gw2日常");
             sendMessage.AppendLine("2 gw2商人");
             sendMessage.AppendLine("3 gw2懒人");
