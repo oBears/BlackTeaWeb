@@ -16,7 +16,7 @@ namespace BlackTeaWeb
         public long timestamp;
         public override string ToString()
         {
-            return $"【{timestamp}】发布者:{senderId} [{desc}]";
+            return $"【{timestamp}】[{desc}]";
         }
     }
 
