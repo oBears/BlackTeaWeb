@@ -300,7 +300,7 @@ namespace BlackTeaWeb
             var sendMessage = new StringBuilder();
             sendMessage.AppendLine("【招募:回复此条 id|内容 例如:123|我会辅助输出1-23全通】");
 
-            var codeStr = GW2Recruit.GetRecruitLst();
+            var codeStr = GW2Recruit.GetRecruitLstStr();
             sendMessage.AppendLine(codeStr);
             var msg = SendGroupMessage(groupId, sendMessage.ToString());
             var msgId = msg.Get<int>("message_id");
@@ -438,6 +438,7 @@ namespace BlackTeaWeb
         {
             var sendMessage = new StringBuilder();
             sendMessage.AppendLine("【回复此条数字执行命令】");
+            sendMessage.AppendLine($"当前招募数量{GW2Recruit.GetRecruitLstCount()}");
             sendMessage.AppendLine("1 gw2日常");
             sendMessage.AppendLine("2 gw2商人");
             sendMessage.AppendLine("3 gw2懒人");

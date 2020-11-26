@@ -29,13 +29,40 @@ namespace BlackTeaWeb
             GW2Recruit.webRoot = webRoot;
         }
 
-        public static string GetRecruitLst()
+        public static int GetRecruitLstCount()
+        {
+            var lst = GetRecruitLst();
+            var count = 0;
+            if (lst != null)
+            {
+                count = lst.Count;
+            }
+
+            return count;
+        }
+
+        public static List<RecruitInfo> GetRecruitLst()
         {
             try
             {
                 var db = MongoDbHelper.GetDb();
                 var recruits = db.GetCollection<RecruitInfo>("recruits").AsQueryable().ToList();
+                return recruits;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
 
+            return null;
+        }
+
+        public static string GetRecruitLstStr()
+        {
+            var recruits = GetRecruitLst();
+
+            if (recruits != null)
+            {
                 var filterLst = new List<RecruitInfo>();
                 foreach (var info in recruits)
                 {
@@ -60,11 +87,6 @@ namespace BlackTeaWeb
                 string retStr = "当天列表(>20为随机):\r\n";
                 retStr += string.Join("\r\n", filterLst);
                 return retStr;
-
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
             }
 
             return "";
