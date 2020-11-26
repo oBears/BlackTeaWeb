@@ -154,7 +154,7 @@ namespace BlackTeaWeb
         private static async Task OnGroupMessageAsync(long groupId, long senderId, string rawMessage)
         {
             //at机器人 回复帮助
-            if (rawMessage == "[CQ:at,qq=2778769763]")
+            if (rawMessage.IndexOf("[CQ:at,qq=2778769763]") >= 0)
             {
                 AnswerHelp(groupId);
                 return;
