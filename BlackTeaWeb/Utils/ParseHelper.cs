@@ -19,7 +19,7 @@ namespace BlackTeaWeb
             GW2APIController.InitAPICache(saveDir);
         }
 
-        public static void Parse(string logFile,string outputFile)
+        public static ParsedEvtcLog Parse(string logFile, string outputFile)
         {
             var operation = new OperationController(logFile, "Ready to parse");
             var fInfo = new FileInfo(logFile);
@@ -48,6 +48,7 @@ namespace BlackTeaWeb
             // once simulation is done, computing buff stats is thread safe
             Parallel.ForEach(log.PlayerList, player => player.GetBuffs(log, BuffEnum.Self));
             Parallel.ForEach(log.FightData.Logic.Targets, target => target.GetBuffs(log));
+
             DirectoryInfo saveDirectory = fInfo.Directory;
             using (var fs = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
             using (var sw = new StreamWriter(fs))
@@ -55,8 +56,8 @@ namespace BlackTeaWeb
                 var builder = new HTMLBuilder(log, new HTMLSettings(true, true), htmlAssets, null);
                 builder.CreateHTML(sw, null);
             }
-            operation.UpdateProgressWithCancellationCheck("HTML created");
-            operation.FinalizeStatus("Parsing Successful - ");
+
+            return log;
 
         }
     }

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GW2EIEvtcParser;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -357,7 +358,7 @@ namespace BlackTeaWeb
         private static async Task HelpActionAsync(long groupId, int cmd)
         {
 
-            switch(cmd)
+            switch (cmd)
             {
                 case 1:
                     await AnwerWebDaily(groupId);
@@ -513,7 +514,21 @@ namespace BlackTeaWeb
                 var htmlFileName = Path.Combine(botConfig.WebRoot, "files", $"{guid}.html");
                 SendGroupMessage(groupId, $"{At(senderId)}正在解析日志文件,请耐心等待！");
                 await DownloadHelper.DownloadAsync(fileUrl, evtcFileName);
-                ParseHelper.Parse(evtcFileName, htmlFileName);
+                var log = ParseHelper.Parse(evtcFileName, htmlFileName);
+                var db = MongoDbHelper.GetDb();
+                var logs = db.GetCollection<DPSLog>("dpsLogs");
+                logs.InsertOne(new DPSLog
+                {
+                    Id = guid,
+                    BossId = log.FightData.TriggerID,
+                    BossName = log.FightData.GetFightName(log),
+                    Success = log.FightData.Success,
+                    CostTime = log.FightData.FightEnd,
+                    DurationString = log.FightData.DurationString,
+                    Uploader = log.LogData.PoVName,
+                    Gw2Build = log.LogData.GW2Build.ToString(),
+                    UploadTime = DateTimeOffset.Now.ToUnixTimeSeconds()
+                });
                 SendGroupMessage(groupId, $"{At(senderId)}解析完成,点击链接查看, {botConfig.GetWebURL($"files/{guid}.html")}");
                 try
                 {

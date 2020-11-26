@@ -89,19 +89,6 @@ function mainLoad() {
             cr: !!logData.crData
         },
         methods: {
-            switchTheme: function (state) {
-                if (state === this.light) {
-                    return;
-                }
-                var style = this.light ? 'yeti' : 'slate';
-                this.light = state;
-                var newStyle = this.light ? 'yeti' : 'slate';
-                document.body.classList.remove("theme-" + style);
-                document.body.classList.add("theme-" + newStyle);
-                if (storeTheme) storeTheme(newStyle);
-                var theme = document.getElementById('theme');
-                theme.href = themes[newStyle];
-            },
             getLogData: function () {
                 return logData;
             }
@@ -109,31 +96,6 @@ function mainLoad() {
         computed: {
             errorMessages: function () {
                 return logData.logErrors;
-            },
-            uploadLinks: function () {
-                var res = [
-                    { 
-                        key: "DPS Reports Link (EI)", 
-                        url: "" 
-                    },
-                    { 
-                        key: "DPS Reports Link (RH)", 
-                        url: "" 
-                    },
-                    { 
-                        key: "Raidar Link", 
-                        url: "" 
-                    }
-                ];
-                var hasAny = false;
-                for (var i = 0; i < logData.uploadLinks.length; i++) {
-                    var link = logData.uploadLinks[i];
-                    if (link.length > 0) {
-                        hasAny = true;
-                        res[i].url = link;
-                    }
-                }
-                return hasAny ? res : null;
             }
         },
         mounted() {
