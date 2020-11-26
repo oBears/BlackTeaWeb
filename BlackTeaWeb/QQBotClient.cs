@@ -380,40 +380,6 @@ namespace BlackTeaWeb
             }
         }
 
-        //private static void ProcessAddRecruit(long groupId, long senderId, string rawMessage)
-        //{
-
-        //    if (splits.Length > 1)
-        //    {
-        //        var id = int.Parse(splits[0]);
-        //        var content = splits[1];
-
-        //        var info = GW2Recruit.GetRecruitInfo(id);
-        //        if (info == null)
-        //        {
-        //            //告知sender
-        //            var sendMessage = new StringBuilder();
-        //            var codeStr = $"没有这个发布项 id={id}！";
-        //            sendMessage.AppendLine(codeStr);
-        //            SendGroupMessage(groupId, sendMessage.ToString());
-        //        }
-        //        else
-        //        {
-        //            //告知sender
-        //            var sendMessage = new StringBuilder();
-        //            var codeStr = "消息已发送！";
-        //            sendMessage.AppendLine(codeStr);
-        //            SendGroupMessage(groupId, sendMessage.ToString());
-
-        //            sendMessage = new StringBuilder();
-        //            var privateMsgStr = $"sender={senderId} {content}";
-        //            sendMessage.AppendLine(privateMsgStr);
-
-        //            SendPrivateMessage(info.senderId, privateMsgStr);
-        //        }
-        //    }
-        //}
-
         private static void ProcessConnect(long groupId, long senderId, string rawMessage)
         {
             var splits = rawMessage.Split('|');
