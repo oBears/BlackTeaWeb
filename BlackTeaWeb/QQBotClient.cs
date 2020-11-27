@@ -153,7 +153,7 @@ namespace BlackTeaWeb
         }
         private static async Task OnGroupMessageAsync(long groupId, long senderId, string rawMessage)
         {
-            //at机器人 回复帮助
+            //at机器人 回复帮助 只匹配at机器人
             if (rawMessage == ("[CQ:at,qq=2778769763]"))
             {
                 AnswerHelp(groupId);
