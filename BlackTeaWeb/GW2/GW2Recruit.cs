@@ -66,7 +66,8 @@ namespace BlackTeaWeb
                 var filterLst = new List<RecruitInfo>();
                 foreach (var info in recruits)
                 {
-                    if (info.senderId == 420975789)
+                    if (true)
+                    //if (info.senderId == 420975789)
                     {
                         filterLst.Add(info);
                     }
@@ -79,12 +80,12 @@ namespace BlackTeaWeb
                     }
                 }
 
-                if (filterLst.Count > 20)
+                if (filterLst.Count > 10)
                 {
-                    filterLst = GetRandomListItemListNoSync(filterLst, 20, new Random());
+                    filterLst = GetRandomListItemListNoSync(filterLst, 10, new Random());
                 }
 
-                string retStr = "当天列表(>20为随机):\r\n";
+                string retStr = "招募列表(>10为随机):\r\n";
                 retStr += string.Join("\r\n", filterLst);
                 return retStr;
             }
