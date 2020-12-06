@@ -350,7 +350,7 @@ namespace BlackTeaWeb
 
             sendMessage.AppendLine($"指挥官手册");
             var handbookTasks = await GW2Api.GetHandBookTasksAsync();
-            sendMessage.AppendLine(handbookTasks);
+            sendMessage.AppendLine(handbookTasks.ClearHTMLTag());
 
             SendGroupMessage(groupId, sendMessage.ToString());
         }
