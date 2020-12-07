@@ -18,6 +18,12 @@ namespace BlackTeaWeb
         {
             return $"【{timestamp}】[{desc}]";
         }
+
+        public string GetTimeStr()
+        {
+            var dateTime = new DateTime(timestamp);
+            return dateTime.ToString("D");
+        }
     }
 
     public static class GW2Recruit
@@ -55,42 +61,6 @@ namespace BlackTeaWeb
             }
 
             return null;
-        }
-
-        public static string GetRecruitLstStr()
-        {
-            var recruits = GetRecruitLst();
-
-            if (recruits != null)
-            {
-                var filterLst = new List<RecruitInfo>();
-                foreach (var info in recruits)
-                {
-                    if (true)
-                    //if (info.senderId == 420975789)
-                    {
-                        filterLst.Add(info);
-                    }
-                    else
-                    {
-                        if (DateTime.Today.Ticks < info.timestamp)
-                        {
-                            filterLst.Add(info);
-                        }
-                    }
-                }
-
-                if (filterLst.Count > 10)
-                {
-                    filterLst = GetRandomListItemListNoSync(filterLst, 10, new Random());
-                }
-
-                string retStr = "招募列表(>10为随机):\r\n";
-                retStr += string.Join("\r\n", filterLst);
-                return retStr;
-            }
-
-            return "";
         }
 
         public static List<int> GetRandomIndex(int idxCount, int count, Random random)
@@ -196,6 +166,27 @@ namespace BlackTeaWeb
             }
 
             return null;
+        }
+
+        public static int GetTodayRecruitLstCount()
+        {
+            var recruits = GetRecruitLst();
+
+            if (recruits != null)
+            {
+                var filterLst = new List<RecruitInfo>();
+                foreach (var info in recruits)
+                {
+                    if (DateTime.Today.Ticks < info.timestamp)
+                    {
+                        filterLst.Add(info);
+                    }
+                }
+
+                return filterLst.Count;
+            }
+
+            return 0;
         }
     }
 }

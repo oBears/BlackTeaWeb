@@ -1,0 +1,26 @@
+﻿@page
+@model BlackTeaWeb.IndexModel
+@{
+    ViewData["Title"] = "Test";
+    var lst = BlackTeaWeb.GW2Recruit.GetRecruitLst();
+}
+
+<h1>Create Product </h1>
+
+<table border="1" width="100%">
+    <tr>
+        <th>发布者QQ</th>
+        <th>内容</th>
+        <th>时间</th>
+    </tr>
+    @foreach (var row in lst)
+    {
+        <tr>
+            <td>@row.senderId</td>
+            <td>@row.desc</td>
+            <td align="right">@row.GetTimeStr()</td>
+        </tr>
+
+    }
+</table>
+

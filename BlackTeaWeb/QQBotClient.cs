@@ -299,21 +299,27 @@ namespace BlackTeaWeb
         private static async Task AnswerRecruitLst(long groupId)
         {
             var sendMessage = new StringBuilder();
-            sendMessage.AppendLine("【招募:回复此条 id|内容 例如:123|我会辅助输出1-23全通】");
+            sendMessage.AppendLine($"招募列表 今日招募{GW2Recruit.GetTodayRecruitLstCount()}");
+            sendMessage.AppendLine(botConfig.GetWebURL("Recruits"));
 
-            var codeStr = GW2Recruit.GetRecruitLstStr();
-            sendMessage.AppendLine(codeStr);
             var msg = SendGroupMessage(groupId, sendMessage.ToString());
-            var msgId = msg.Get<int>("message_id");
 
-            if (group2ConnectDic.ContainsKey(groupId))
-            {
-                group2ConnectDic[groupId] = msgId;
-            }
-            else
-            {
-                group2ConnectDic.Add(groupId, msgId);
-            }
+
+            //sendMessage.AppendLine("【招募:回复此条 id|内容 例如:123|我会辅助输出1-23全通】");
+
+            //var codeStr = GW2Recruit.GetRecruitLstStr();
+            //sendMessage.AppendLine(codeStr);
+            //var msg = SendGroupMessage(groupId, sendMessage.ToString());
+            //var msgId = msg.Get<int>("message_id");
+
+            //if (group2ConnectDic.ContainsKey(groupId))
+            //{
+            //    group2ConnectDic[groupId] = msgId;
+            //}
+            //else
+            //{
+            //    group2ConnectDic.Add(groupId, msgId);
+            //}
         }
 
         private static async Task AnwerGameDaily(long groupId)
