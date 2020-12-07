@@ -132,11 +132,6 @@ namespace BlackTeaWeb
         {
             try
             {
-                if (rawMessage.Length > 40)
-                {
-                    rawMessage = rawMessage.Substring(0, 40);
-                }
-
                 var curRecruiting = IsRecruiting(senderId);
                 if (curRecruiting == null)
                 {

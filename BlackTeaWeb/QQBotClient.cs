@@ -226,9 +226,9 @@ namespace BlackTeaWeb
             {
                 var cmd = rawMessage.Replace("gw2", string.Empty);
 
-                if (cmd.IndexOf("强制除") > 0)
+                if (cmd.IndexOf("强删除") >= 0)
                 {
-                    var connectId = long.Parse(cmd.Replace("强制除", string.Empty));
+                    var connectId = long.Parse(cmd.Replace("强删除", string.Empty));
                     ForceDeleteRecruit(groupId, connectId);
                     return;
                 }
