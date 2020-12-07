@@ -177,7 +177,7 @@ namespace BlackTeaWeb
                             {
                                 if (int.TryParse(match.ToString(), out var cmdId))
                                 {
-                                    HelpActionAsync(groupId, cmdId);
+                                    HelpActionAsync(groupId, senderId, cmdId);
                                 }
                             }
 
@@ -226,6 +226,13 @@ namespace BlackTeaWeb
             {
                 var cmd = rawMessage.Replace("gw2", string.Empty);
 
+                if (cmd.IndexOf("强制除") > 0)
+                {
+                    var connectId = long.Parse(cmd.Replace("强制除", string.Empty));
+                    ForceDeleteRecruit(groupId, connectId);
+                    return;
+                }
+
                 switch (cmd)
                 {
                     case "":
@@ -272,11 +279,56 @@ namespace BlackTeaWeb
                             AnswerAddRecruit(groupId);
                         }
                         break;
+                    case "删除发布":
+                        {
+                            AnswerDeleteRecruit(groupId, senderId);
+                        }
+                        break;
                     default:
                         break;
                 }
             }
         }
+
+        private static async Task ForceDeleteRecruit(long groupId, long connectId)
+        {
+            var sendMessage = new StringBuilder();
+            var result = GW2Recruit.ForceDeleteRecruitInfo(connectId);
+
+            if (result)
+            {
+                //删除成功
+                sendMessage.AppendLine("已强制删除该账号发布！");
+                SendGroupMessage(groupId, sendMessage.ToString());
+            }
+            else
+            {
+                //删除失败
+                sendMessage.AppendLine("该账号没有发布招募！");
+                SendGroupMessage(groupId, sendMessage.ToString());
+            }
+        }
+
+        private static async Task AnswerDeleteRecruit(long groupId, long senderId)
+        {
+            var sendMessage = new StringBuilder();
+            var result = GW2Recruit.DeleteRecruitInfo(senderId);
+
+            if (result)
+            {
+                //删除成功
+                sendMessage.AppendLine("已删除该账号发布！");
+                SendGroupMessage(groupId, sendMessage.ToString());
+            }
+            else
+            {
+                //删除失败
+                sendMessage.AppendLine("该账号没有发布招募！");
+                SendGroupMessage(groupId, sendMessage.ToString());
+            }
+        }
+
+        
 
         private static async Task AnswerAddRecruit(long groupId)
         {
@@ -361,7 +413,7 @@ namespace BlackTeaWeb
             SendGroupMessage(groupId, sendMessage.ToString());
         }
 
-        private static async Task HelpActionAsync(long groupId, int cmd)
+        private static async Task HelpActionAsync(long groupId, long senderId, int cmd)
         {
 
             switch (cmd)
@@ -383,6 +435,9 @@ namespace BlackTeaWeb
                     break;
                 case 6:
                     await AnswerAddRecruit(groupId);
+                    break;
+                case 7:
+                    AnswerDeleteRecruit(groupId, senderId);
                     break;
             }
         }
@@ -452,6 +507,8 @@ namespace BlackTeaWeb
             sendMessage.AppendLine("4 gw2游戏日常");
             sendMessage.AppendLine("5 gw2招募(测试功能)");
             sendMessage.AppendLine("6 gw2发布(测试功能)");
+            sendMessage.AppendLine("7 gw2删除发布");
+            
             sendMessage.AppendLine("ps.上传日志自动解析");
             var msg = SendGroupMessage(groupId, sendMessage.ToString());
             var msgId = msg.Get<int>("message_id");

@@ -199,5 +199,25 @@ namespace BlackTeaWeb
 
             return 0;
         }
+
+        public static bool DeleteRecruitInfo(long senderId)
+        {
+            var db = MongoDbHelper.GetDb();
+            var collection = db.GetCollection<RecruitInfo>("recruits");
+            var filter = Builders<RecruitInfo>.Filter;
+
+            var result = collection.DeleteOne(filter.Eq("senderId", senderId));
+            return result.DeletedCount > 0;
+        }
+
+        public static bool ForceDeleteRecruitInfo(long connectId)
+        {
+            var db = MongoDbHelper.GetDb();
+            var collection = db.GetCollection<RecruitInfo>("recruits");
+            var filter = Builders<RecruitInfo>.Filter;
+
+            var result = collection.DeleteOne(filter.Eq("timestamp", connectId));
+            return result.DeletedCount > 0;
+        }
     }
 }
