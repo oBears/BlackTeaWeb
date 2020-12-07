@@ -33,7 +33,7 @@ namespace BlackTeaWeb.Pages
             {
                 query = query.Where(x => x.BossName == BossName);
             }
-            Logs = query.Where(x => x.Success).OrderByDescending(x => x.UploadTime).Take(100).ToList();
+            Logs = query.Where(x => x.Success).OrderBy(x => x.CostTime).Take(100).ToList();
         }
     }
 }

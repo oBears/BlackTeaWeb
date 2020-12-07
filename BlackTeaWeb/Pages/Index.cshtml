@@ -18,7 +18,7 @@
     }
 </div>
 
-<h3> 最近100条通关日志 </h3>
+<h3> Top 100 通关日志 </h3>
 
 <table class="pure-table" width="100%">
     <thead>
@@ -45,7 +45,7 @@
                 <td>@item.DurationString</td>
                 <td>@item.Uploader</td>
                 <td>@item.UploadTime.DateFormat()</td>
-                <td><a href="~/files/@(item.Id.ToString()).html">查看</a></td>
+                <td><a target="_blank" href="~/files/@(item.Id.ToString()).html">查看</a></td>
             </tr>
 
             index++;
