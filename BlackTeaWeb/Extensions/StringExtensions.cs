@@ -11,9 +11,7 @@ namespace BlackTeaWeb
 
         public static string ClearHTMLTag(this string htmlStr)
         {
-
             return Regex.Replace(htmlStr, @"<(.[^>]*)>", "", RegexOptions.IgnoreCase);
-
         }
     }
 }

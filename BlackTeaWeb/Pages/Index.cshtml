@@ -1,0 +1,56 @@
+﻿@page
+@model BlackTeaWeb.Pages.IndexModel
+
+
+
+<style>
+    .tag {
+        margin: 5px 10px 5px 10px;
+    }
+</style>
+
+<h1>DPS 日志历史 </h1>
+<div>
+    <a class="pure-button tag" href="?bossName=" target="_self">全部</a>
+    @foreach (var bossName in Model.BossNames)
+    {
+        <a class="pure-button tag" href="?bossName=@bossName" target="_self">@bossName</a>
+    }
+</div>
+
+<h3> 最近100条通关日志 </h3>
+
+<table class="pure-table" width="100%">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Boss</th>
+            <th>进度</th>
+            <th>消耗时间</th>
+            <th>上传者</th>
+            <th>上传时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var index = 1;
+        }
+        @foreach (var item in Model.Logs)
+        {
+            <tr>
+                <td>@index</td>
+                <td>@item.BossName</td>
+                <td>@(item.Success?"通关":"失败")</td>
+                <td>@item.DurationString</td>
+                <td>@item.Uploader</td>
+                <td>@item.UploadTime.DateFormat()</td>
+                <td><a href="~/files/@(item.Id.ToString()).html">查看</a></td>
+            </tr>
+
+            index++;
+        }
+    </tbody>
+</table>
+
+
