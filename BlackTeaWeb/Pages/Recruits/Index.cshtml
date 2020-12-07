@@ -5,13 +5,14 @@
 }
 
 <h1>招募列表 </h1>
-
+<h2>点击联系生成联系代码，在任一有招募机器人的群里发送</h2>
 <table border="1" width="100%">
     <tr>
         <th>联系ID</th>
         <th>发布者QQ</th>
         <th>内容</th>
         <th>时间</th>
+        <th>操作</th>
     </tr>
     @foreach (var row in lst)
     {
@@ -20,8 +21,30 @@
             <td>@row.senderId</td>
             <td>@row.desc</td>
             <td align="right">@row.GetTimeStr()</td>
+            <td>
+                <button id="modifyButton" onclick="ModifyMovie('@row.GetConnectId()')">联系</button>
+            </td>
         </tr>
 
     }
 </table>
+
+
+
+<script>
+    function ModifyMovie(id) {
+
+        var input = prompt('输入对话');
+        alert('gw2联系|' + id + '|' + input);
+
+
+        @*$.ajax({
+            url: '@Url.Action("modifyMovieClicked","HelloWorld")',
+            type: 'POST',
+            data: { movieName: $('#MovieName').val() },
+        }).done(function () {
+            alert('Modify Movie');
+        });*@
+    }
+</script>
 

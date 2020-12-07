@@ -233,6 +233,13 @@ namespace BlackTeaWeb
                     return;
                 }
 
+                if (cmd.IndexOf("联系|") >= 0)
+                {
+                    var connectStr = cmd.Replace("联系|", string.Empty);
+                    var splits = connectStr.Split('|');
+                    ProcessConnect(groupId, senderId, connectStr);
+                }
+
                 switch (cmd)
                 {
                     case "":
