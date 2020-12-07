@@ -18,6 +18,11 @@ namespace BlackTeaWeb
         {
             return $"【{timestamp}】[{desc}]";
         }
+        
+        public string GetConnectId()
+        {
+            return timestamp.ToString();
+        }
 
         public string GetTimeStr()
         {
