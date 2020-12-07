@@ -22,7 +22,18 @@ namespace BlackTeaWeb
         public string GetTimeStr()
         {
             var dateTime = new DateTime(timestamp);
-            return dateTime.ToString("D");
+            var pastDay = DateTime.Now.Day - dateTime.Day;
+
+            var str = "今天";
+            if (pastDay == 0)
+            {
+                str = "今天";
+            }
+            else
+            {
+                str = $"{pastDay}天前";
+            }
+            return str;
         }
     }
 
