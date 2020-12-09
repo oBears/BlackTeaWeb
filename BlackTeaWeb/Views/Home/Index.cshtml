@@ -1,7 +1,5 @@
-﻿@page
-@model BlackTeaWeb.Pages.IndexModel
-
-
+﻿
+@model List<DPSLog>
 
 <style>
     .tag {
@@ -12,7 +10,7 @@
 <h1>DPS 日志历史 </h1>
 <div>
     <a class="pure-button tag" href="?bossName=" target="_self">全部</a>
-    @foreach (var bossName in Model.BossNames)
+    @foreach (var bossName in ViewBag.bossNames)
     {
         <a class="pure-button tag" href="?bossName=@bossName" target="_self">@bossName</a>
     }
@@ -36,7 +34,7 @@
         @{
             var index = 1;
         }
-        @foreach (var item in Model.Logs)
+        @foreach (var item in Model)
         {
             <tr>
                 <td>@index</td>
@@ -52,5 +50,6 @@
         }
     </tbody>
 </table>
+
 
 
