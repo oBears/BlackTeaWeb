@@ -1,4 +1,5 @@
-﻿using GW2EIEvtcParser;
+﻿using BlackTeaWeb.Services;
+using GW2EIEvtcParser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -61,6 +62,13 @@ namespace BlackTeaWeb
                             var rawMessage = obj.Get<string>("raw_message");
                             var senderId = obj.Get<long>("user_id");
                             await OnGroupMessageAsync(groupId, senderId, rawMessage);
+                        }
+                        else if (messageType == "private")
+                        {
+                            var rawMessage = obj.Get<string>("raw_message");
+                            var senderId = obj.Get<long>("user_id");
+                            var senderName = obj.Get<string>("sender.nickname");
+                            OnPrivateMessage(senderId, senderName, rawMessage);
                         }
                         break;
                     case "notice":
@@ -335,7 +343,7 @@ namespace BlackTeaWeb
             }
         }
 
-        
+
 
         private static async Task AnswerAddRecruit(long groupId)
         {
@@ -515,7 +523,7 @@ namespace BlackTeaWeb
             sendMessage.AppendLine("5 gw2招募(测试功能)");
             sendMessage.AppendLine("6 gw2发布(测试功能)");
             sendMessage.AppendLine("7 gw2删除发布");
-            
+
             sendMessage.AppendLine("ps.上传日志自动解析");
             var msg = SendGroupMessage(groupId, sendMessage.ToString());
             var msgId = msg.Get<int>("message_id");
@@ -566,6 +574,23 @@ namespace BlackTeaWeb
 
                 }
 
+            }
+        }
+
+
+        private static void OnPrivateMessage(long senderId, string senderName, string rawMessage)
+        {
+            if (Regex.IsMatch(rawMessage, "[^gw2login]"))
+            {
+                var loginId = rawMessage.Replace("gw2login", string.Empty).Trim();
+                var user = UserService.FindUserById(senderId);
+                if (user == null)
+                {
+                    user = new User() { Id = senderId, NickName = senderName, Role = RoleType.MEMBER };
+                    UserService.AddUser(user);
+                }
+                var loginresult = LoginService.Login(loginId, user);
+                SendPrivateMessage(senderId, loginresult);
             }
         }
 

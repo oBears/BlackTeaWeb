@@ -23,5 +23,15 @@ namespace BlackTeaWeb
             return db;
         }
 
+
+        public static IMongoCollection<T> GetCollection<T>(string aliasName="")
+        {
+            if (string.IsNullOrEmpty(aliasName))
+            {
+                aliasName = typeof(T).Name;
+            }
+            return GetDb().GetCollection<T>(aliasName);
+        }
+
     }
 }

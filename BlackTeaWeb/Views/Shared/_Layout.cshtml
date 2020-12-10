@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]  红茶</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" crossorigin="anonymous">
+    <link href="~/static/css/bt.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="~/static/js/sweetalert2@9.js"></script>
+    <script src="~/static/js/base64.js"></script>
+    <script src="~/static/js/bt.js"></script>
+
+</head>
+<body>
+
+    <div class="header">
+        <div class="home-menu pure-menu pure-menu-horizontal">
+            <a class="pure-menu-heading" href="">Black Tea</a>
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item"><a href="/" class="pure-menu-link">dps日志</a></li>
+                <li class="pure-menu-item"><a href="/Recruits" class="pure-menu-link">招募</a></li>
+                @if (User.IsLogin())
+                {
+                    <li class="pure-menu-item">昵称： @User.GetNickName()</li>
+                    <li class="pure-menu-item"><a href="/Account/Logout" class="pure-menu-link">注销</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div>
+        @RenderBody()
+    </div>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
