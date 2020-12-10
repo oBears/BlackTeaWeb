@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlackTeaWeb
 {
-    public class CodeResult
+    public class Result
     {
         public int ErrCode { set; get; }
         public string ErrMsg { set; get; }

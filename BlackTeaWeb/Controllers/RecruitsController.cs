@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace BlackTeaWeb.Controllers
 {
-    public class RecruitsController : BaseController
+    public class RecruitsController : Controller
     {
+        [Permission]
         public IActionResult Index()
         {
             return View();

@@ -1,0 +1,53 @@
+﻿
+<div id="app">
+
+    <h1>请复制下面内容发送给qq机器人</h1>
+    <div class="code" ref="code">gw2login {{code}}</div>
+    <button class="pure-button" v-on:click="copyData">复制</button>
+
+</div>
+
+
+@section Scripts{
+
+    <script src="~/static/js/signalr.js"></script>
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                hub: null,
+                code: ""
+            },
+            methods: {
+                setCookie(cname, cvalue, exdays) {
+                    var d = new Date();
+                    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+                    var expires = "expires=" + d.toGMTString();
+                    document.cookie = cname + "=" + cvalue + "; " + expires;
+                },
+                copyData() {
+                    copyText(this.$refs.code.innerText);
+                    successMsg("复制成功");
+                }
+            },
+            mounted() {
+                this.hub = new signalR.HubConnectionBuilder().withUrl("/loginHub").build();
+                this.hub.on("setCode", code => {
+                    this.code = code;
+                });
+                this.hub.on("loginSuccess", token => {
+                    var d = new Date();
+                    d.setTime(d.getTime() + (30 * 24 * 60 * 60 * 1000));
+                    setCookie("token", token, d, "/");
+                    window.location.href = "/Recruits";
+                });
+                this.hub.start().then(function () { }).catch(function (err) {
+                    return console.error(err.toString());
+                });
+            }
+
+        })
+
+    </script>
+
+}

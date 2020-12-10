@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace BlackTeaWeb.Controllers
 {
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
         private readonly IMongoDatabase db;
         public HomeController()
         {
             db = MongoDbHelper.GetDb();
         }
-
+        [Permission(RoleType.ADMIN)]
         public IActionResult Index(string bossName)
         {
             ViewBag.BossNames = db.GetCollection<DPSLog>("dpsLogs").AsQueryable().Where(x => x.Success).GroupBy(x => x.BossName).Select(x => x.Key).ToList();
@@ -26,6 +26,6 @@ namespace BlackTeaWeb.Controllers
             var logs = query.Where(x => x.Success).OrderBy(x => x.CostTime).Take(100).ToList();
             return View(logs);
         }
-     
+
     }
 }

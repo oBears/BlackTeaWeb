@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using BlackTeaWeb.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +29,8 @@ namespace BlackTeaWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSignalR();
+           
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -53,11 +56,10 @@ namespace BlackTeaWeb
             }
             app.UseStaticFiles();
             app.UseRouting();
-            app.UseStaticFiles();
-            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapHub<LoginHub>("/loginhub");
             });
         }
     }
