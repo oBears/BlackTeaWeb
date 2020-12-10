@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BlackTeaWeb.Controllers
 {
     public class AccountController : Controller
     {
-        public IActionResult Login()
+        public IActionResult LoginAsync()
         {
             return View();
         }

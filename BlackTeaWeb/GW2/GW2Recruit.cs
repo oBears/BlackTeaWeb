@@ -7,6 +7,13 @@ using MongoDB.Driver;
 
 namespace BlackTeaWeb
 {
+    public class RecruitConfirm
+    {
+        public long userId;
+        public string content;
+        public long timestamp;
+    }
+
     public class RecruitInfo
     {
         public ObjectId id;
@@ -14,6 +21,18 @@ namespace BlackTeaWeb
 
         public string desc;
         public long timestamp;
+
+        public List<RecruitConfirm> waitConfirmLst;
+        public List<long> confirmedLst;
+
+        public int requiredCount;
+
+        public RecruitInfo()
+        {
+            waitConfirmLst = new List<RecruitConfirm>();
+            confirmedLst = new List<long>();
+        }
+
         public override string ToString()
         {
             return $"【{timestamp}】[{desc}]";

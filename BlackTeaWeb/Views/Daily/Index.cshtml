@@ -1,0 +1,32 @@
+﻿<div id="app">
+    <div>
+        <h1>游戏日常</h1>
+        @{
+            var strLst = ViewBag.DailyInfo;
+        }
+        <div class="code" ref="daily" style="white-space:pre-wrap">@strLst</div>
+        <button class="pure-button" v-on:click="copyData2">复制</button>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script src="~/static/js/signalr.js"></script>
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                hub: null,
+                code: ""
+            },
+            methods: {
+                copyData2() {
+                    copyMultiLineText(this.$refs.daily.innerText);
+                    successMsg("复制成功2");
+                }
+            },
+        })
+
+    </script>
+
+}

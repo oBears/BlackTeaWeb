@@ -4,8 +4,8 @@
     <h1>请复制下面内容发送给qq机器人</h1>
     <div class="code" ref="code">gw2login {{code}}</div>
     <button class="pure-button" v-on:click="copyData">复制</button>
-
 </div>
+
 
 
 @section Scripts{
@@ -28,7 +28,7 @@
                 copyData() {
                     copyText(this.$refs.code.innerText);
                     successMsg("复制成功");
-                }
+                },
             },
             mounted() {
                 this.hub = new signalR.HubConnectionBuilder().withUrl("/loginHub").build();

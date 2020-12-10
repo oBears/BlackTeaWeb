@@ -23,7 +23,6 @@ namespace BlackTeaWeb
 
         private static Dictionary<long, int> group2helpIdDic = new Dictionary<long, int>();
         private static Dictionary<long, int> group2ConnectDic = new Dictionary<long, int>();
-        private static Dictionary<long, int> group2InputRecruitDic = new Dictionary<long, int>();
 
 
         public static void Start(BotConfig config)
@@ -208,44 +207,22 @@ namespace BlackTeaWeb
                             return;
                         }
                     }
-
-                    //是回复发布
-                    if (group2InputRecruitDic.TryGetValue(groupId, out msgId))
-                    {
-                        if (msgId == replyId)
-                        {
-                            var match = Regex.Match(rawMessage, @"(?<=\[CQ:at,qq=[\s\S]+\]\s)[^\[][\s\S]*");
-
-                            if (match.Success)
-                            {
-                                ProcessRecuritInsert(groupId, senderId, match.ToString());
-                            }
-
-                            return;
-                        }
-                    }
                 }
 
                 return;
             }
 
             //处理gw2开头信息
-            if (Regex.IsMatch(rawMessage, "[^gw2]"))
+            if (Regex.IsMatch(rawMessage, "gw2(.*)"))
             {
                 var cmd = rawMessage.Replace("gw2", string.Empty);
-
-                if (cmd.IndexOf("强删除") >= 0)
-                {
-                    var connectId = long.Parse(cmd.Replace("强删除", string.Empty));
-                    ForceDeleteRecruit(groupId, connectId);
-                    return;
-                }
 
                 if (cmd.IndexOf("联系|") >= 0)
                 {
                     var connectStr = cmd.Replace("联系|", string.Empty);
                     var splits = connectStr.Split('|');
                     ProcessConnect(groupId, senderId, connectStr);
+                    return;
                 }
 
                 switch (cmd)
@@ -289,23 +266,13 @@ namespace BlackTeaWeb
                             AnswerRecruitLst(groupId);
                         }
                         break;
-                    case "发布":
-                        {
-                            AnswerAddRecruit(groupId);
-                        }
-                        break;
-                    case "删除发布":
-                        {
-                            AnswerDeleteRecruit(groupId, senderId);
-                        }
-                        break;
                     default:
                         break;
                 }
             }
         }
 
-        private static async Task ForceDeleteRecruit(long groupId, long connectId)
+        private static async Task ForceDeleteRecruit(long senderId, long connectId)
         {
             var sendMessage = new StringBuilder();
             var result = GW2Recruit.ForceDeleteRecruitInfo(connectId);
@@ -314,17 +281,17 @@ namespace BlackTeaWeb
             {
                 //删除成功
                 sendMessage.AppendLine("已强制删除该账号发布！");
-                SendGroupMessage(groupId, sendMessage.ToString());
+                SendPrivateMessage(senderId, sendMessage.ToString());
             }
             else
             {
                 //删除失败
                 sendMessage.AppendLine("该账号没有发布招募！");
-                SendGroupMessage(groupId, sendMessage.ToString());
+                SendPrivateMessage(senderId, sendMessage.ToString());
             }
         }
 
-        private static async Task AnswerDeleteRecruit(long groupId, long senderId)
+        private static async Task AnswerDeleteRecruit(long senderId)
         {
             var sendMessage = new StringBuilder();
             var result = GW2Recruit.DeleteRecruitInfo(senderId);
@@ -333,33 +300,13 @@ namespace BlackTeaWeb
             {
                 //删除成功
                 sendMessage.AppendLine("已删除该账号发布！");
-                SendGroupMessage(groupId, sendMessage.ToString());
+                SendPrivateMessage(senderId, sendMessage.ToString());
             }
             else
             {
                 //删除失败
                 sendMessage.AppendLine("该账号没有发布招募！");
-                SendGroupMessage(groupId, sendMessage.ToString());
-            }
-        }
-
-
-
-        private static async Task AnswerAddRecruit(long groupId)
-        {
-            var sendMessage = new StringBuilder();
-            sendMessage.AppendLine("【发布:回复此条 内容】");
-
-            var msg = SendGroupMessage(groupId, sendMessage.ToString());
-            var msgId = msg.Get<int>("message_id");
-
-            if (group2InputRecruitDic.ContainsKey(groupId))
-            {
-                group2InputRecruitDic[groupId] = msgId;
-            }
-            else
-            {
-                group2InputRecruitDic.Add(groupId, msgId);
+                SendGroupMessage(senderId, sendMessage.ToString());
             }
         }
 
@@ -448,12 +395,6 @@ namespace BlackTeaWeb
                 case 5:
                     await AnswerRecruitLst(groupId);
                     break;
-                case 6:
-                    await AnswerAddRecruit(groupId);
-                    break;
-                case 7:
-                    AnswerDeleteRecruit(groupId, senderId);
-                    break;
             }
         }
 
@@ -491,23 +432,14 @@ namespace BlackTeaWeb
             }
         }
 
-        private static void ProcessRecuritInsert(long groupId, long senderId, string rawMessage)
+        private static void ProcessRecuritInsert(long senderId, string rawMessage)
         {
-            //if (senderId != 420975789)
-            //{
-            //    var sendMessage = new StringBuilder();
-            //    var codeStr = "请使用管理员账号发布";
-            //    sendMessage.AppendLine(codeStr);
-            //    SendGroupMessage(groupId, sendMessage.ToString());
-            //}
-            //else
             {
-
                 GW2Recruit.InsertRecruit(senderId, rawMessage);
                 var sendMessage = new StringBuilder();
                 var codeStr = "发布成功!";
                 sendMessage.AppendLine(codeStr);
-                SendGroupMessage(groupId, sendMessage.ToString());
+                SendPrivateMessage(senderId, sendMessage.ToString());
             }
         }
 
@@ -520,9 +452,7 @@ namespace BlackTeaWeb
             sendMessage.AppendLine("2 gw2商人");
             sendMessage.AppendLine("3 gw2懒人");
             sendMessage.AppendLine("4 gw2游戏日常");
-            sendMessage.AppendLine("5 gw2招募(测试功能)");
-            sendMessage.AppendLine("6 gw2发布(测试功能)");
-            sendMessage.AppendLine("7 gw2删除发布");
+            sendMessage.AppendLine("5 gw2招募");
 
             sendMessage.AppendLine("ps.上传日志自动解析");
             var msg = SendGroupMessage(groupId, sendMessage.ToString());
@@ -580,7 +510,7 @@ namespace BlackTeaWeb
 
         private static void OnPrivateMessage(long senderId, string senderName, string rawMessage)
         {
-            if (Regex.IsMatch(rawMessage, "[^gw2login]"))
+            if (Regex.IsMatch(rawMessage, "gw2login(.*)"))
             {
                 var loginId = rawMessage.Replace("gw2login", string.Empty).Trim();
                 var user = UserService.FindUserById(senderId);
@@ -592,6 +522,22 @@ namespace BlackTeaWeb
                 var loginresult = LoginService.Login(loginId, user);
                 SendPrivateMessage(senderId, loginresult);
             }
+            else if (Regex.IsMatch(rawMessage, "gw2删除发布(.*)"))
+            {
+                AnswerDeleteRecruit(senderId);
+            }
+            else if (Regex.IsMatch(rawMessage, "gw2发布(.*)"))
+            {
+                var desc = rawMessage.Replace("gw2发布|", "");
+                ProcessRecuritInsert(senderId, desc);
+            }
+            else if (Regex.IsMatch(rawMessage, "gw2强删除(.*)"))
+            {
+                var cmd = rawMessage.Replace("gw2强删除|", "");
+                var connectId = long.Parse(cmd.Replace("强删除", string.Empty));
+                ForceDeleteRecruit(senderId, connectId);
+            }
+
         }
 
     }

@@ -52,6 +52,21 @@ function copyText(data) {
     document.execCommand("copy");
     document.body.removeChild(tmpInput);
 }
+
+function copyMultiLineText(data) {
+    var tmpInput = document.createElement('textarea');
+    tmpInput.value = data;
+    tmpInput.style.position = "absolute";
+    tmpInput.style.top = 0;
+    tmpInput.style.left = 0;
+    tmpInput.style.opacity = 0;
+    tmpInput.style.zIndex = -10;
+    document.body.appendChild(tmpInput);
+    tmpInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tmpInput);
+}
+
 function alertMsg(title, message, type) {
     Swal.fire(
         title,
