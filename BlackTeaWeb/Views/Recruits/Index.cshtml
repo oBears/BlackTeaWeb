@@ -3,13 +3,14 @@
 }
 
 <h1>招募列表 </h1>
-<h2>点击联系生成联系代码，在任一有招募机器人的群里发送</h2>
+<h2>点击联系生成联系代码，发送给机器人</h2>
 <table class="pure-table" width="100%">
     <thead>
         <tr>
             <th>联系ID</th>
             <th>发布者QQ</th>
             <th>内容</th>
+            <th>上车情况</th>
             <th>时间</th>
             <th>操作</th>
         </tr>
@@ -21,9 +22,10 @@
                 <td>@row.timestamp</td>
                 <td>@row.senderId</td>
                 <td>@row.desc</td>
+                <td>@row.confirmedLst.Count/@row.requiredCount</td>
                 <td align="right">@row.GetTimeStr()</td>
                 <td>
-                    <button id="modifyButton" class="pure-button" onclick="ModifyMovie('@row.GetConnectId()')">联系</button>
+                    <button id="modifyButton" class="pure-button" onclick="ConnectSender('@row.GetConnectId()')">上车</button>
                 </td>
             </tr>
 
@@ -31,22 +33,35 @@
     </tbody>
 </table>
 
-
+<div>
+    <h1>我的招募</h1>
+    <table class="pure-table" width="100%">
+        <thead>
+            <tr>
+                <th>QQ</th>
+                <th>内容</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        @foreach (var teamInfo in ViewBag.teamInfo)
+        {
+            <tr>
+                <th>@teamInfo.senderId</th>
+                <th>@teamInfo.content</th>
+                <td>
+                    <button id="modifyButton" class="pure-button" onclick="@BlackTeaWeb.GW2Recruit.DeleteTeammate(User.GetId(), teamInfo.senderId))">删除</button>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
 
 <script>
-    function ModifyMovie(id) {
+    function ConnectSender(id) {
 
         var input = prompt('输入对话');
         alert('gw2联系|' + id + '|' + input);
-
-
-        @*$.ajax({
-            url: '@Url.Action("modifyMovieClicked","HelloWorld")',
-            type: 'POST',
-            data: { movieName: $('#MovieName').val() },
-        }).done(function () {
-            alert('Modify Movie');
-        });*@
     }
+
 </script>
 

@@ -7,11 +7,10 @@ using MongoDB.Driver;
 
 namespace BlackTeaWeb
 {
-    public class RecruitConfirm
+    public class RecruitTeammateInfo
     {
-        public long userId;
+        public long senderId;
         public string content;
-        public long timestamp;
     }
 
     public class RecruitInfo
@@ -22,15 +21,13 @@ namespace BlackTeaWeb
         public string desc;
         public long timestamp;
 
-        public List<RecruitConfirm> waitConfirmLst;
-        public List<long> confirmedLst;
+        public List<RecruitTeammateInfo> confirmedLst;
 
         public int requiredCount;
 
         public RecruitInfo()
         {
-            waitConfirmLst = new List<RecruitConfirm>();
-            confirmedLst = new List<long>();
+            confirmedLst = new List<RecruitTeammateInfo>();
         }
 
         public override string ToString()
@@ -237,6 +234,56 @@ namespace BlackTeaWeb
 
             var result = collection.DeleteOne(filter.Eq("timestamp", connectId));
             return result.DeletedCount > 0;
+        }
+
+        public static void TeammateJoin(RecruitInfo info, long senderId, string content)
+        {
+            var teammateInfo = info.confirmedLst.Find((info) => { return info.senderId == senderId; });
+
+            if (teammateInfo == null)
+            {
+                teammateInfo = new RecruitTeammateInfo() { senderId = senderId, content = content };
+                info.confirmedLst.Add(teammateInfo);
+            }
+            else
+            {
+                teammateInfo.content = content;
+            }
+
+        }
+
+        public static RecruitInfo GetRecruitInfoByQQ(long senderId)
+        {
+            try
+            {
+                var db = MongoDbHelper.GetDb();
+
+                //return recruitLst.Find((info) => { return info.id == id; });
+
+                return db.GetCollection<RecruitInfo>("recruits").Find(x => x.senderId == senderId).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            return null;
+        }
+
+        public static bool DeleteTeammate(long senderId, long deleteId)
+        {
+            var recruitInfo = GetRecruitInfoByQQ(senderId);
+
+            var teammateInfo = recruitInfo.confirmedLst.Find((info) => { return info.senderId == deleteId; });
+           
+            if (teammateInfo != null)
+            {
+                recruitInfo.confirmedLst.Remove(teammateInfo);
+                return true;
+            }
+
+            return false;
+           
         }
     }
 }

@@ -192,21 +192,21 @@ namespace BlackTeaWeb
                         }
                     }
 
-                    //是回复招募
-                    if (group2ConnectDic.TryGetValue(groupId, out msgId))
-                    {
-                        if (msgId == replyId)
-                        {
-                            var match = Regex.Match(rawMessage, @"(?<=\[CQ:at,qq=[\s\S]+\]\s)[^\[][\s\S]*");
+                    ////是回复招募
+                    //if (group2ConnectDic.TryGetValue(groupId, out msgId))
+                    //{
+                    //    if (msgId == replyId)
+                    //    {
+                    //        var match = Regex.Match(rawMessage, @"(?<=\[CQ:at,qq=[\s\S]+\]\s)[^\[][\s\S]*");
 
-                            if (match.Success)
-                            {
-                                ProcessConnect(groupId, senderId, match.ToString());
-                            }
+                    //        if (match.Success)
+                    //        {
+                    //            ProcessConnect(groupId, senderId, match.ToString());
+                    //        }
 
-                            return;
-                        }
-                    }
+                    //        return;
+                    //    }
+                    //}
                 }
 
                 return;
@@ -216,14 +216,6 @@ namespace BlackTeaWeb
             if (Regex.IsMatch(rawMessage, "gw2(.*)"))
             {
                 var cmd = rawMessage.Replace("gw2", string.Empty);
-
-                if (cmd.IndexOf("联系|") >= 0)
-                {
-                    var connectStr = cmd.Replace("联系|", string.Empty);
-                    var splits = connectStr.Split('|');
-                    ProcessConnect(groupId, senderId, connectStr);
-                    return;
-                }
 
                 switch (cmd)
                 {
@@ -398,7 +390,7 @@ namespace BlackTeaWeb
             }
         }
 
-        private static void ProcessConnect(long groupId, long senderId, string rawMessage)
+        private static void ProcessConnect(long senderId, string rawMessage)
         {
             var splits = rawMessage.Split('|');
             if (splits.Length > 1)
@@ -413,7 +405,7 @@ namespace BlackTeaWeb
                     var sendMessage = new StringBuilder();
                     var codeStr = $"没有这个发布项 id={id}！";
                     sendMessage.AppendLine(codeStr);
-                    SendGroupMessage(groupId, sendMessage.ToString());
+                    SendPrivateMessage(senderId, sendMessage.ToString());
                 }
                 else
                 {
@@ -421,11 +413,18 @@ namespace BlackTeaWeb
                     var sendMessage = new StringBuilder();
                     var codeStr = "消息已发送！";
                     sendMessage.AppendLine(codeStr);
-                    SendGroupMessage(groupId, sendMessage.ToString());
+                    SendPrivateMessage(senderId, sendMessage.ToString());
 
                     sendMessage = new StringBuilder();
-                    var privateMsgStr = $"sender={senderId} {content}";
+                    var newFlag = info.confirmedLst.Find((info) => { return info.senderId == senderId; }) == null;
+
+                    var privateMsgStr = $"{(newFlag ? "新" : "已")}上车选手={senderId} {content}";
                     sendMessage.AppendLine(privateMsgStr);
+
+                    if (newFlag)
+                    {
+                        GW2Recruit.TeammateJoin(info, senderId, content);
+                    }
 
                     SendPrivateMessage(info.senderId, privateMsgStr);
                 }
@@ -528,7 +527,7 @@ namespace BlackTeaWeb
             }
             else if (Regex.IsMatch(rawMessage, "gw2发布(.*)"))
             {
-                var desc = rawMessage.Replace("gw2发布|", "");
+                var desc = rawMessage.Replace("gw2发布|", string.Empty);
                 ProcessRecuritInsert(senderId, desc);
             }
             else if (Regex.IsMatch(rawMessage, "gw2强删除(.*)"))
@@ -537,7 +536,13 @@ namespace BlackTeaWeb
                 var connectId = long.Parse(cmd.Replace("强删除", string.Empty));
                 ForceDeleteRecruit(senderId, connectId);
             }
+            else if (Regex.IsMatch(rawMessage, "gw2联系(.*)"))
+            {
+                var connectStr = rawMessage.Replace("gw2联系|", string.Empty);
 
+                ProcessConnect(senderId, connectStr);
+                return;
+            }
         }
 
     }
