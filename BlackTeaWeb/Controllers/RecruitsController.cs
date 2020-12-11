@@ -22,5 +22,13 @@ namespace BlackTeaWeb.Controllers
 
             return View();
         }
+
+        public bool DeleteTeammate(long senderId, long deleteId)
+        {
+            return GW2Recruit.DeleteTeammate(senderId, deleteId);
+        }
+
+
+
     }
 }

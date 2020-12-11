@@ -32,13 +32,10 @@ namespace BlackTeaWeb.Services
         {
             var collection = MongoDbHelper.GetCollection<LoginRecord>();
             var record = collection.Find(x => x.Id == id).FirstOrDefault();
-            if (record.Status == LoginStatus.Sucess)
-            {
-                return "当前登录码已失效,请刷新网页重新获取";
-            }
-            if (record.Status == LoginStatus.Pending)
+            if (record.Status != LoginStatus.Invalid)
             {
                 record.Status = LoginStatus.Sucess;
+                record.LoginTime = DateTime.Now;
                 collection.ReplaceOne(x => x.Id == id, record);
                 if (Clients.TryGetValue(record.Id, out IClientProxy client))
                 {

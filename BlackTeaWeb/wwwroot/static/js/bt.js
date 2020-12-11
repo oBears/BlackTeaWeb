@@ -119,3 +119,12 @@ function confirmMsg(title, message) {
         });
     });
 }
+
+function httpPost(url,data) {
+    return axios.post(url, data);
+}
+function httpGet(url, data) {
+    return axios.get(url, {
+        params: data
+    });
+}
