@@ -149,7 +149,7 @@ namespace BlackTeaWeb
             return null;
         }
 
-        public static void InsertRecruit(long senderId, string rawMessage)
+        public static bool InsertRecruit(long senderId, int count, string rawMessage)
         {
             try
             {
@@ -158,7 +158,7 @@ namespace BlackTeaWeb
                 {
                     var db = MongoDbHelper.GetDb();
                     db.GetCollection<RecruitInfo>("recruits")
-                        .InsertOne(new RecruitInfo() { senderId = senderId, desc = rawMessage, timestamp = DateTime.Now.Ticks });
+                        .InsertOne(new RecruitInfo() { senderId = senderId, desc = rawMessage, requiredCount = count, timestamp = DateTime.Now.Ticks });
                 }
                 else
                 {
@@ -169,12 +169,14 @@ namespace BlackTeaWeb
                     db.GetCollection<RecruitInfo>("recruits").UpdateOne(filter.Eq("id", curRecruiting.id), update.Set("desc", rawMessage).Set("timestamp", DateTime.Now.Ticks));
                 }
 
+                return true;
             }
             catch(Exception ex)
             {
                 Console.WriteLine(ex.ToString());
             }
 
+            return false;
         }
 
         public static RecruitInfo GetRecruitInfo(long id)
@@ -236,9 +238,23 @@ namespace BlackTeaWeb
             return result.DeletedCount > 0;
         }
 
-        public static void TeammateJoin(RecruitInfo info, long senderId, string content)
+        public static bool TeammateJoin(long infoId, long senderId, string content)
+        {
+            var info = GetRecruitInfo(infoId);
+
+            if (info == null)
+                return false;
+
+            return TeammateJoin(info, senderId, content);
+        }
+
+        public static bool TeammateJoin(RecruitInfo info, long senderId, string content)
         {
             var teammateInfo = info.confirmedLst.Find((info) => { return info.senderId == senderId; });
+
+            var db = MongoDbHelper.GetDb();
+            var filter = Builders<RecruitInfo>.Filter;
+            var update = Builders<RecruitInfo>.Update;
 
             if (teammateInfo == null)
             {
@@ -250,6 +266,9 @@ namespace BlackTeaWeb
                 teammateInfo.content = content;
             }
 
+            db.GetCollection<RecruitInfo>("recruits").UpdateOne(filter.Eq("id", info.id), update.Set("confirmedLst", info.confirmedLst));
+
+            return true;
         }
 
         public static RecruitInfo GetRecruitInfoByQQ(long senderId)
@@ -275,14 +294,21 @@ namespace BlackTeaWeb
             var recruitInfo = GetRecruitInfoByQQ(senderId);
 
             var teammateInfo = recruitInfo.confirmedLst.Find((info) => { return info.senderId == deleteId; });
-           
-            if (teammateInfo != null)
+
+            var db = MongoDbHelper.GetDb();
+            var filter = Builders<RecruitInfo>.Filter;
+            var update = Builders<RecruitInfo>.Update;
+
+            if (teammateInfo == null)
             {
-                recruitInfo.confirmedLst.Remove(teammateInfo);
-                return true;
+                return false;
             }
 
-            return false;
+            recruitInfo.confirmedLst.Remove(teammateInfo);
+
+            db.GetCollection<RecruitInfo>("recruits").UpdateOne(filter.Eq("id", recruitInfo.id), update.Set("confirmedLst", recruitInfo.confirmedLst));
+
+            return true;
            
         }
     }

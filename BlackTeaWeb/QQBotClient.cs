@@ -421,10 +421,7 @@ namespace BlackTeaWeb
                     var privateMsgStr = $"{(newFlag ? "新" : "已")}上车选手={senderId} {content}";
                     sendMessage.AppendLine(privateMsgStr);
 
-                    if (newFlag)
-                    {
-                        GW2Recruit.TeammateJoin(info, senderId, content);
-                    }
+                    GW2Recruit.TeammateJoin(info, senderId, content);
 
                     SendPrivateMessage(info.senderId, privateMsgStr);
                 }
@@ -434,7 +431,7 @@ namespace BlackTeaWeb
         private static void ProcessRecuritInsert(long senderId, string rawMessage)
         {
             {
-                GW2Recruit.InsertRecruit(senderId, rawMessage);
+                GW2Recruit.InsertRecruit(senderId, 1, rawMessage);
                 var sendMessage = new StringBuilder();
                 var codeStr = "发布成功!";
                 sendMessage.AppendLine(codeStr);
