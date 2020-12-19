@@ -10,6 +10,10 @@ namespace BlackTeaWeb
         public long Id { set; get; }
         public string NickName { set; get; }
         public string Role { set; get; }
+        /// <summary>
+        /// 公开数据
+        /// </summary>
+        public bool OpenData { set; get; }
     }
 
     public class RoleType

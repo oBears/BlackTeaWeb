@@ -28,12 +28,16 @@ namespace BlackTeaWeb
         {
             return claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
         }
+        public static bool IsAdmin(this ClaimsPrincipal claimsPrincipal)
+        {
+            return claimsPrincipal.GetRole() == RoleType.ADMIN;
+        }
 
         public static bool IsLogin(this ClaimsPrincipal claimsPrincipal)
         {
             return claimsPrincipal.GetId() > 0;
         }
-       
+
     }
 
 

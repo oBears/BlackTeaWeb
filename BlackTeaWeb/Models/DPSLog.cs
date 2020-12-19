@@ -16,5 +16,7 @@ namespace BlackTeaWeb
         public bool Success { set; get; }
         public string Gw2Build { set; get; }
         public long UploadTime { set; get; }
+        public long UploaderId { set; get; }
+        public bool IsOpen { set; get; }
     }
 }

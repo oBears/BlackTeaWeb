@@ -40,7 +40,7 @@ namespace BlackTeaWeb
             return string.Join("\r\n", taskNames);
         }
 
-        public static async Task<string> GetTraderCodeAsync()
+        public static string GetTraderCode()
         {
             var dateNow = DateTime.Now;
             var dayOfWeek = DateTime.Now.DayOfWeek;

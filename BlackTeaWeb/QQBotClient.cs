@@ -234,7 +234,7 @@ namespace BlackTeaWeb
                         break;
                     case "商人":
                         {
-                            await AnwerTrader(groupId);
+                            AnwerTrader(groupId);
                         }
                         break;
                     case "懒人":
@@ -344,10 +344,10 @@ namespace BlackTeaWeb
             SendGroupMessage(groupId, sendMessage.ToString());
         }
 
-        private static async Task AnwerTrader(long groupId)
+        private static void AnwerTrader(long groupId)
         {
             var sendMessage = new StringBuilder();
-            var codeStr = await GW2Api.GetTraderCodeAsync();
+            var codeStr = GW2Api.GetTraderCode();
             sendMessage.AppendLine(codeStr);
             SendGroupMessage(groupId, sendMessage.ToString());
         }
@@ -376,7 +376,7 @@ namespace BlackTeaWeb
                     await AnwerWebDaily(groupId);
                     break;
                 case 2:
-                    await AnwerTrader(groupId);
+                    AnwerTrader(groupId);
                     break;
                 case 3:
                     await AnwerPVEFast(groupId);
@@ -488,7 +488,10 @@ namespace BlackTeaWeb
                     DurationString = log.FightData.DurationString,
                     Uploader = log.LogData.PoVName,
                     Gw2Build = log.LogData.GW2Build.ToString(),
-                    UploadTime = DateTimeOffset.Now.ToUnixTimeSeconds()
+                    UploadTime = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    UploaderId = senderId
+                   
+                    
                 });
                 SendGroupMessage(groupId, $"{At(senderId)}解析完成,点击链接查看, {botConfig.GetWebURL($"files/{guid}.html")}");
                 try
