@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using BlackTeaWeb.Hubs;
+using BlackTeaWeb.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,14 +29,25 @@ namespace BlackTeaWeb
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+
+            services.AddTransient(p => new MySqlDatabase(Configuration.GetConnectionString("Mysql")));
+            services.AddTransient<DPSLogService>();
+            services.AddTransient<UserService>();
+            services.AddTransient<LoginService>();
+            services.AddTransient<RecruitService>();
+
+            services.AddMvc().AddJsonOptions(jsonOptions =>
+            {
+                jsonOptions.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+                jsonOptions.JsonSerializerOptions.Converters.Add(new LongConverter());
+            });
             services.AddSignalR();
-           
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            GW2Recruit.Init(env.WebRootPath);
+            ServiceLocator.Init(app.ApplicationServices);
             GW2Api.Init(env.WebRootPath);
             ParseHelper.Init(Path.Combine(env.WebRootPath, "cache"));
             var botConfig = Configuration.GetSection("BotConfig").Get<BotConfig>();

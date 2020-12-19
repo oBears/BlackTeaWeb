@@ -1,105 +1,174 @@
-﻿@{
-    var lst = GW2Recruit.GetRecruitLst();
-}
+﻿
+<style>
+    .panel {
+        padding: 20px;
+    }
 
-    <div>
+    .panel-title {
+        width: 100%;
+        margin: 5px 5px;
+        text-align: right;
+    }
 
-        <div>
-            <table>
-                <thead>
-                    <tr><td>发布招募</td></tr>
-                </thead>
-                <tr><td>数量:<input id="count" /></td></tr>
-                <tr><td>需求:<input id="desc" /></td></tr>
-                <tr><td><button class="pure-button" onclick="Recruit('@User.GetId()')">发布</button></td></tr>
-            </table>
+    .panel-content {
+        width: 100%;
+    }
+</style>
+<div id="app">
+    @*<div>
+            @if (ViewBag.recruiting)
+            {
+                <h1>我的招募车队</h1>
+
+                <table class="pure-table" width="100%">
+                    <thead>
+                        <tr>
+                            <th>QQ</th>
+                            <th>内容</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    @foreach (var teamInfo in ViewBag.teamInfo)
+                    {
+                        <tr>
+                            <th>@teamInfo.senderId</th>
+                            <th>@teamInfo.content</th>
+                            <td>
+                                <button id="modifyButton" class="pure-button" onclick="DeleteTeammate('@User.GetId()', '@teamInfo.senderId')">删除</button>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+        </div>*@
+
+
+    <div class="panel">
+        <h1>招募列表 </h1>
+        <div class="panel-title">
+            <button class="pure-button" v-on:click="create()">发布招募</button>
         </div>
-
-        @if (ViewBag.recruiting)
-        {
-            <h1>我的招募车队</h1>
-
+        <div class="panel-content">
             <table class="pure-table" width="100%">
                 <thead>
                     <tr>
-                        <th>QQ</th>
+                        <th>#</th>
+                        <th>发布者QQ</th>
                         <th>内容</th>
+                        <th>上车情况</th>
+                        <th>时间</th>
                         <th>操作</th>
                     </tr>
                 </thead>
-                @foreach (var teamInfo in ViewBag.teamInfo)
-                {
-                    <tr>
-                        <th>@teamInfo.senderId</th>
-                        <th>@teamInfo.content</th>
+                <tbody>
+                    <tr v-for="(item,index) in recruits">
+                        <td>{{index+1}}</td>
+                        <td>{{item.recruiter}}</td>
+                        <td>{{item.desc}}</td>
+                        <td>{{item.teammateCount}}/{{item.requiredCount}}</td>
+                        <td align="right">{{item.timeStr}}</td>
                         <td>
-                            <button id="modifyButton" class="pure-button" onclick="DeleteTeammate('@User.GetId()', '@teamInfo.senderId')">删除</button>
+                            <button class="pure-button" v-on:click="joinTeam(item)">上车</button>
+                            <button class="pure-button" v-on:click="edit(item)">编辑</button>
                         </td>
                     </tr>
-                }
+                    <tr v-if="!recruits">
+                        <td colspan="6">暂无数据</td>
+                    </tr>
+                </tbody>
             </table>
-        }
+        </div>
     </div>
 
-<h1>招募列表 </h1>
-<h2>点击联系生成联系代码，发送给机器人</h2>
-<table class="pure-table" width="100%">
-    <thead>
-        <tr>
-            <th>联系ID</th>
-            <th>发布者QQ</th>
-            <th>内容</th>
-            <th>上车情况</th>
-            <th>时间</th>
-            <th>操作</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var row in lst)
-        {
-            <tr>
-                <td>@row.timestamp</td>
-                <td>@row.senderId</td>
-                <td>@row.desc</td>
-                <td>@row.confirmedLst.Count/@row.requiredCount</td>
-                <td align="right">@row.GetTimeStr()</td>
-                <td>
-                    <button id="modifyButton" class="pure-button" onclick="ConnectSender('@row.GetConnectId()', '@User.GetId()')">上车</button>
-                </td>
-            </tr>
+    <div class="drawer-warp" v-show="showEdit">
+        <div class="mask"></div>
+        <div class="drawer">
+            <label class="drawer-close" v-on:click="showEdit=false"></label>
+            <div class="drawer-header">
+                <div class="drawer-title">招募信息</div>
+            </div>
+            <div class="drawer-content">
+                <form class="pure-form pure-form-aligned">
+                    <fieldset>
+                        <div class="pure-control-group">
+                            <label for="name">数量</label>
+                            <input v-model="recruit.requiredCount" />
+                        </div>
 
-        }
-    </tbody>
-</table>
+                        <div class="pure-control-group">
+                            <label for="password">需求</label>
+                            <input v-model="recruit.desc" />
+                        </div>
+                        <div class="pure-controls">
+                            <button type="button" v-on:click="save()" class="pure-button pure-button-primary">发布</button>
+                        </div>
+                    </fieldset>
+                </form>
 
+            </div>
+
+        </div>
+    </div>
 
 
-<script>
+</div>
 
-    function ConnectSender(infoStr, senderStr) {
+@section Scripts{
+    <script>
 
-        var contenStr = prompt('输入对话');
+        var app = new Vue({
+            el: "#app",
+            data: {
+                recruits: [],
+                teammates: [],
+                recruit: {
+                    recruiter: "",
+                    desc: "",
+                    requiredCount: ""
+                },
+                showEdit: false
+            },
+            methods: {
+                getRecruits() {
+                    httpGet("/Recruits/GetRecruits", {}).then(res => {
+                        this.recruits = res.data;
+                    });
+                },
+                getTeammates(recruiter) {
+                    httpGet("/Recruits/GetTeammates", { recruiter }).then(res => {
+                        this.teammates = res.data;
+                    });
+                },
+                joinTeam(recruit) {
 
-        httpGet("/Recruits/TeammateJoin", { infoStr, senderStr, contenStr }).then(response => {
-            successMsg("上车成功");
+                },
+                create() {
+                    this.showEdit = true;
+                    this.recruit = {
+                        recruiter: "",
+                        desc: "",
+                        requiredCount: ""
+                    }
+                },
+                edit(item) {
+                    this.showEdit = true;
+                },
+                save() {
+                    httpPost("/Recruits/SaveRecruit", this.recruit).then(res => {
+
+                        console.log(res);
+                    });
+                }
+            },
+            mounted() {
+                //this.getRecruits();
+            }
         });
-    }
-
-    function DeleteTeammate(senderIdStr, deleteIdStr) {
-
-        httpGet("/Recruits/DeleteTeammate", { senderIdStr, deleteIdStr }).then(response => {
-            successMsg("删除成功");
-        });
-    }
-
-    function Recruit(senderStr) {
-        var countStr = document.getElementById('count').value;
-        var desc = document.getElementById('desc').value;
 
 
-        httpGet("/Recruits/AddRecruit", { countStr, senderStr, desc }).then(response => {
-            successMsg("发布成功");
-        });
-    }
-</script>
+
+    </script>
+
+}
+
 

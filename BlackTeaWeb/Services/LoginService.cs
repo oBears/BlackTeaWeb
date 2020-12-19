@@ -5,47 +5,46 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using System.Collections.Concurrent;
 using Microsoft.AspNetCore.SignalR;
+using BlackTeaWeb.Hubs;
 
 namespace BlackTeaWeb.Services
 {
-    public static class LoginService
+    public class LoginService
     {
-        public static ConcurrentDictionary<string, IClientProxy> Clients = new ConcurrentDictionary<string, IClientProxy>();
-        public static void AddRecord(LoginRecord record, IClientProxy client)
+        private readonly MySqlDatabase _db;
+
+        public LoginService(MySqlDatabase db)
         {
-            MongoDbHelper.GetCollection<LoginRecord>().InsertOne(record);
-            Clients.TryAdd(record.Id, client);
+            _db = db;
         }
 
-        public static void LoginInvalid(string id)
+        public void AddLog(LoginLog log)
         {
-            var collection = MongoDbHelper.GetCollection<LoginRecord>();
-            var record = collection.Find(x => x.Id == id).FirstOrDefault();
-            if (record.Status == LoginStatus.Pending)
-            {
-                record.Status = LoginStatus.Invalid;
-                collection.ReplaceOne(x => x.Id == id, record);
-            }
-            Clients.TryRemove(record.Id, out IClientProxy _);
+            _db.Execute("insert LoginLog(Id,Status,CreateTime)values(@Id,@Status,@CreateTime)", log);
         }
-        public static string Login(string id, User user)
+
+        public LoginLog GetLogByID(string id)
         {
-            var collection = MongoDbHelper.GetCollection<LoginRecord>();
-            var record = collection.Find(x => x.Id == id).FirstOrDefault();
-            if (record.Status != LoginStatus.Invalid)
-            {
-                record.Status = LoginStatus.Sucess;
-                record.LoginTime = DateTime.Now;
-                collection.ReplaceOne(x => x.Id == id, record);
-                if (Clients.TryGetValue(record.Id, out IClientProxy client))
-                {
-                    var token = JWTUtils.Create(user, Constant.TOKEN_KEY);
-                    client.SendAsync("loginSuccess", token);
-                    return "登录成功";
-                }
-            }
-            return "当前登录码已失效,请刷新网页重新获取";
+            return _db.QueryFirst<LoginLog>("select * from LoginLog where Id=@id", new { id });
         }
+
+
+        public void ModifyLogStatus(string id, LoginStatus status)
+        {
+            _db.Execute("update LoginLog set Status=@status where Id=@id", new { id, status });
+        }
+        //public static void LoginInvalid(string id)
+        //{
+        //    using var db = ServiceLocator.GetService<MySqlDatabase>();
+        //    var log = db.QueryFirst<LoginLog>("select * from LoginLog where Id=@id", new { id });
+        //    if (log.Status == LoginStatus.Pending)
+        //    {
+        //        log.Status = LoginStatus.Invalid;
+        //        db.Execute("update  LoginLog set Status=@Status where Id=@Id", log);
+        //    }
+        //    Clients.TryRemove(log.Id, out IClientProxy _);
+        //}
+       
 
     }
 }

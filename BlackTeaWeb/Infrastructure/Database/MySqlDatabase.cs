@@ -31,6 +31,10 @@ namespace BlackTeaWeb
         {
             transaction?.Commit();
         }
+        public IEnumerable<dynamic> Query(string sql, object param = null)
+        {
+            return conn.Query(sql, param, transaction);
+        }
         public IEnumerable<T> Query<T>(string sql, object param = null)
         {
             return conn.Query<T>(sql, param, transaction);
@@ -56,7 +60,6 @@ namespace BlackTeaWeb
             }
             if (conn != null && conn.State != ConnectionState.Closed)
                 conn.Close();
-
         }
     }
 }

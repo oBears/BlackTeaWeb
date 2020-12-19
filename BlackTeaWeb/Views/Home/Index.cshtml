@@ -4,16 +4,11 @@
     }
 </style>
 <div id="app">
-
-
-    <h1>DPS 日志历史 </h1>
     <div>
         <a class="pure-button tag" v-bind:class="{'pure-button-primary':bossName==''}" v-on:click="search('')">全部</a>
         <a class="pure-button tag" v-bind:class="{'pure-button-primary':bossName==boss}" v-for="boss in bossNames" v-key="boss" v-on:click="search(boss)">{{boss}}</a>
     </div>
-
     <h3> Top 100 通关日志 </h3>
-
     <table class="pure-table" width="100%">
         <thead>
             <tr>
@@ -27,11 +22,11 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(item,index) in logs" v-key="item.id">
+            <tr v-for="(item,index) in logs" v-key="index">
                 <td>{{index+1}}</td>
                 <td>{{item.bossName}}</td>
                 <td>{{item.success?"通关":"失败"}}</td>
-                <td>{{item.durationString}}</td>
+                <td>{{item.costTime|duration}}</td>
                 <td>{{item.uploader}}</td>
                 <td>{{item.uploadTime}}</td>
                 <td><a target="_blank" :href="'/files/'+item.id+'.html'">查看</a></td>
@@ -39,8 +34,6 @@
         </tbody>
     </table>
 </div>
-
-
 @section Scripts{
 
     <script>
@@ -51,6 +44,15 @@
                 bossNames: [],
                 logs: [],
                 bossName: ""
+            },
+            filters: {
+                duration(val) {
+                    var t = val % (1000 * 60);
+                    var m = Math.round(val / (1000 * 60));
+                    var s = Math.round(t / 1000);
+                    var ms = t % 1000;
+                    return `${m}分 ${s}秒 ${ms}毫秒`
+                }
             },
             methods: {
                 getBossNames() {

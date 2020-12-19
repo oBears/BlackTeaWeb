@@ -11,5 +11,23 @@ namespace BlackTeaWeb
         public int PageIndex { set; get; }
         public int PageSize { set; get; }
 
+        public int SkipCount
+        {
+
+            get
+            {
+                return (PageIndex - 1) * PageSize;
+            }
+
+        }
+
+        public int TakeCount
+        {
+            get
+            {
+                return PageSize;
+            }
+        }
+
     }
 }

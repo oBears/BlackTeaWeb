@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BlackTeaWeb.Models;
+using BlackTeaWeb.Services;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,45 +10,57 @@ namespace BlackTeaWeb.Controllers
 {
     public class RecruitsController : Controller
     {
+        private readonly RecruitService _recruitService;
+        public RecruitsController(RecruitService recruitService)
+        {
+            _recruitService = recruitService;
+        }
+
         [Permission]
         public IActionResult Index()
         {
-            var senderId = User.GetId();
-
-            var selfRecruitInfo = GW2Recruit.GetRecruitInfoByQQ(senderId);
-
-            var lst = new List<RecruitTeammateInfo>();
-            if (selfRecruitInfo != null)
-                lst = selfRecruitInfo.confirmedLst;
-            ViewBag.teamInfo = lst;
-            ViewBag.recruiting = selfRecruitInfo != null;
-
             return View();
         }
-
-        public bool DeleteTeammate(string senderIdStr, string deleteIdStr)
+        public void AddTeammate(Teammate teammate)
         {
-            var senderId = long.Parse(senderIdStr);
-            var deleteId = long.Parse(deleteIdStr);
-
-            return GW2Recruit.DeleteTeammate(senderId, deleteId);
+            _recruitService.AddTeammate(teammate);
+        }
+        public void RemoveTeammate(long recruiter, long qq)
+        {
+            _recruitService.RemoveTeammate(recruiter, qq);
         }
 
-        public bool TeammateJoin(string infoStr, string senderStr, string contenStr)
+        [Permission]
+        public bool SaveRecruit([FromBody] Recruit recruit)
         {
-            var infoId = long.Parse(infoStr);
-            var deleteId = long.Parse(senderStr);
-
-            return GW2Recruit.TeammateJoin(infoId, deleteId, contenStr);
+            recruit.Recruiter = User.GetId();
+            recruit.CreateTime = DateTime.Now;
+            _recruitService.AddOrUpadateRecruit(recruit);
+            return true;
+        }
+        [Permission]
+        public List<Recruit> GetRecruits()
+        {
+            var curId = User.GetId();
+            var recruits = _recruitService.GetRecruits()
+                .OrderBy(x=>x.Recruiter==curId)
+                .ToList();
+            var teamCounts = _recruitService.GetRecruitTeammatCounts();
+            foreach (var item in recruits)
+            {
+                var teamCount = teamCounts.FirstOrDefault(x => x.Recruiter == item.Recruiter);
+                if (teamCount != null)
+                {
+                    item.TeammateCount = teamCount.TeammateCount;
+                }
+            }
+            return recruits;
+        }
+        [Permission]
+        public List<Teammate> GetTeammates(long recruiter)
+        {
+            return _recruitService.GetTeammates(recruiter);
         }
 
-        public bool AddRecruit(string countStr, string senderStr, string desc)
-        {
-            var senderId = long.Parse(senderStr);
-            var count = 1;
-            int.TryParse(countStr, out count);
-
-            return GW2Recruit.InsertRecruit(senderId, count, desc);
-        }
     }
 }

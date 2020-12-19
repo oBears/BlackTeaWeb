@@ -7,33 +7,22 @@ using System.Threading.Tasks;
 
 namespace BlackTeaWeb.Controllers
 {
-    public class DPSLogController: Controller
+    public class DPSLogController : Controller
     {
-        private readonly IMongoDatabase db;
-        public DPSLogController()
+        private readonly DPSLogService  _dpsLogService;
+        public DPSLogController(DPSLogService dpsLogService)
         {
-            db = MongoDbHelper.GetDb();
+            _dpsLogService = dpsLogService;
         }
         public List<string> BossNames()
         {
-            return db.GetCollection<DPSLog>("dpsLogs")
-                .AsQueryable().Where(x => x.Success)
-                .GroupBy(x => x.BossName)
-                .Select(x => x.Key).ToList();
+            return _dpsLogService.GetBossNames();
         }
 
-        public List<DPSLog> List(DPSLogQuery model)
+        public List<DPSLog> List(DPSLogQuery query)
         {
-            IQueryable<DPSLog> query = db.GetCollection<DPSLog>("dpsLogs").AsQueryable();
-            if (!string.IsNullOrEmpty(model.BossName))
-            {
-                query = query.Where(x => x.BossName == model.BossName);
-            }
-            return query.Where(x => x.Success)
-                .OrderBy(x => x.CostTime)
-                .Skip((model.PageIndex - 1) * model.PageSize)
-                .Take(model.PageSize)
-                .ToList();
+            return _dpsLogService.GetList(query);
+
         }
 
     }

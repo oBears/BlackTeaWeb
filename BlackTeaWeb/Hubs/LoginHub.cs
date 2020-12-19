@@ -10,25 +10,27 @@ namespace BlackTeaWeb.Hubs
 {
     public class LoginHub : Hub
     {
+        private readonly LoginService _loginService;
 
-
-
+        public LoginHub(LoginService loginService)
+        {
+            _loginService = loginService;
+        }
         public override async Task OnConnectedAsync()
         {
             await base.OnConnectedAsync();
             await Clients.Caller.SendAsync("setCode", Context.ConnectionId);
-            LoginService.AddRecord(new LoginRecord()
+            _loginService.AddLog(new LoginLog()
             {
                 Id = Context.ConnectionId,
                 CreateTime = DateTime.Now,
                 Status = LoginStatus.Pending
-            }, Clients.Caller);
-
+            });
         }
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             await base.OnDisconnectedAsync(exception);
-            LoginService.LoginInvalid(Context.ConnectionId);
+            _loginService.ModifyLogStatus(Context.ConnectionId, LoginStatus.Invalid);
 
         }
 

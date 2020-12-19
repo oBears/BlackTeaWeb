@@ -5,19 +5,24 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 
 
-namespace BlackTeaWeb.Services
+namespace BlackTeaWeb
 {
-    public static class UserService
+    public class UserService
     {
-
-        public static void AddUser(User user)
+        private readonly MySqlDatabase _db;
+        public UserService(MySqlDatabase db)
         {
-            MongoDbHelper.GetCollection<User>().InsertOne(user);
+            _db = db;
         }
 
-        public static User FindUserById(long userId)
+        public void AddUser(User user)
         {
-            return MongoDbHelper.GetCollection<User>().Find(x => x.Id == userId).FirstOrDefault();
+            _db.Execute("insert into User(Id,NickName,Role,OpenData)values(@Id,@NickName,@Role,@OpenData)", user);
+        }
+
+        public User FindUserById(long id)
+        {
+            return _db.QueryFirst<User>("select * from User where Id=@id", new { id });
         }
 
     }
