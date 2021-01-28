@@ -170,6 +170,7 @@ namespace BlackTeaWeb
                 return;
             }
 
+
             var replyIdObj = Regex.Match(rawMessage, @"(?<=\[CQ:reply,id=)[\s\S]+?(?=\])");
             if (replyIdObj.Success)
             {
